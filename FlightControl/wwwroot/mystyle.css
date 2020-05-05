@@ -1,0 +1,30 @@
+/* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        float: left;
+        display: inline-block;
+        position: left;
+        height: 65%;
+        width: 60%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      /* table style. */
+      table {
+        float: left;
+        display: inline-block;
+        right: 0px;
+        width: 40%;
+        height: 100%;
+        border: 3px solid #73AD21;
+        padding: 10px;
+      }
+      
+      .data {
+          height: 30%;
+          width: 60%;
+      }

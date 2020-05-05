@@ -1,65 +1,124 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Simple Polylines</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 60%;
-        width: 50%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      
-    </style>
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+<body>
     <div id="map"></div>
-    <script>
+    <div id="logs">
+        <table id="internal_flights">
+            <tr>
+                <th>Flight ID</th>
+            </tr>
+            <tr>
+                <td>1 Flight</td>
+            </tr>
+            <tr>
+                <td>2 Flight</td>
+            </tr>
+            <tr>
+                <td>3 Flight</td>
+            </tr>
+            <tr>
+                <td>4 Flight</td>
+            </tr>
+            <tr>
+                <td>5 Flight</td>
+            </tr>
+            <tr>
+                <td>6 Flight</td>
+            </tr>
+            <tr>
+                <td>7 Flight</td>
+            </tr>
+            <tr>
+                <td>8 Flight</td>
+            </tr>
+            <tr>
+                <td>9 Flight</td>
+            </tr>
+        </table>
+        <table id="external_flights">
+            <tr>
+                <th>Flight ID</th>
+            </tr>
+            <tr>
+                <td>10 Flight</td>
+            </tr>
+            <tr>
+                <td>11 Flight</td>
+            </tr>
+            <tr>
+                <td>12 Flight</td>
+            </tr>
+            <tr>
+                <td>13 Flight</td>
+            </tr>
+            <tr>
+                <td>14 Flight</td>
+            </tr>
+            <tr>
+                <td>15 Flight</td>
+            </tr>
+            <tr>
+                <td>16 Flight</td>
+            </tr>
+            <tr>
+                <td>17 Flight</td>
+            </tr>
+            <tr>
+                <td>18 Flight</td>
+            </tr>
+        </table>
+    </div>
+    <div id="data">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-      // This example creates a 2-pixel-wide red polyline showing the path of
-      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
-      // Australia which was made by Charles Kingsford Smith.
+            Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
+        </p>
 
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 6,
-          center: {lat: 32.009444, lng: 34.876944},
-          mapTypeId: 'terrain'
-        });
+        <script>
 
-/*        var flightPlanCoordinates = [
-          {lat: 37.772, lng: -122.214},
-          {lat: 21.291, lng: -157.821},
-          {lat: -18.142, lng: 178.431},
-          {lat: -27.467, lng: 153.027}
-        ];*/
-                  var marker = new google.maps.Marker({
-          // The below line is equivalent to writing:
-          // position: new google.maps.LatLng(-34.397, 150.644)
-          position: {lat: 32.009444, lng: 34.876944},
-          map: map
-        });
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
+            // This example creates a 2-pixel-wide red polyline showing the path of
+            // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+            // Australia which was made by Charles Kingsford Smith.
 
-        flightPath.setMap(map);
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
-    </script>
-  </body>
+            function initMap() {
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 6,
+                    center: { lat: 32.009444, lng: 34.876944 },
+                    mapTypeId: 'terrain'
+                });
+
+                let flightPlanCoordinates = [
+                    { lat: 37.772, lng: -122.214 },
+                    { lat: 21.291, lng: -157.821 },
+                    { lat: -18.142, lng: 178.431 },
+                    { lat: -27.467, lng: 153.027 }
+                ];
+                let marker = new google.maps.Marker({
+                    // The below line is equivalent to writing:
+                    // position: new google.maps.LatLng(-34.397, 150.644)
+                    position: { lat: 32.009444, lng: 34.876944 },
+                    map: map
+                });
+                let flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+
+                flightPath.setMap(map);
+            }
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
+        </script>
+</body>
 </html>
