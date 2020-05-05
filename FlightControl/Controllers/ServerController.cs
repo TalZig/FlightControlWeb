@@ -4,22 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using FlightControl.Models;
 namespace FlightControl.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ServerController : ControllerBase
     {
+        public static ServersManger servers = new ServersManger();
         // GET: api/Server
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Server> Get()
         {
-            return new string[] { "value1", "value2" };
+            return servers.getServers();
         }
 
         // GET: api/Server/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetS")]
         public string Get(int id)
         {
             return "value";
@@ -27,8 +28,9 @@ namespace FlightControl.Controllers
 
         // POST: api/Server
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Server value)
         {
+            servers.addServer(value);
         }
 
         // PUT: api/Server/5
@@ -39,8 +41,9 @@ namespace FlightControl.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            servers.DeleteServer(id);
         }
     }
 }

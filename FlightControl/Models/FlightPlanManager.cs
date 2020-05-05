@@ -7,7 +7,15 @@ namespace FlightControl.Models
 {
     public class FlightPlanManager : IFlightPlanManager
     {
-        private static List<FlightPlan> FlightPlans = new List<FlightPlan>();
+        public List<FlightPlan> FlightPlans = new List<FlightPlan>();
+        public void init()
+        {
+            FlightPlans.Add(new FlightPlan());
+            FlightPlans[0].company_name = "swiss";
+            FlightPlans[0].passengers = 20;
+            
+        }
+        
 
 /*        public void DeleteFlightPlan(string id)
         {

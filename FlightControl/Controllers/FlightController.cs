@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using FlightControl.Models;
 
 namespace FlightControl.Controllers
 {
@@ -12,6 +12,7 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightController : ControllerBase
     {
+        public static FlightManager Flights = new FlightManager();
         // GET: api/Flight
         [HttpGet]
         public IEnumerable<string> Get()
@@ -20,10 +21,10 @@ namespace FlightControl.Controllers
         }
 
         // GET: api/Flight/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetFC")]
         public string Get(int id)
         {
-            return "value";
+            return "blabla";
         }
 
         // POST: api/Flight
@@ -40,8 +41,9 @@ namespace FlightControl.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            Flights.DeleteFlight(id);
         }
     }
 }

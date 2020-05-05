@@ -7,7 +7,7 @@ namespace FlightControl.Models
 {
     public class FlightManager : IFlightManager
     {
-        private static List<Flight> flights = new List<Flight>();
+        public static List<Flight> flights = new List<Flight>();
         public void DeleteFlight(string id)
         {
             Flight flight = flights.Where(x => x.Flight_id.Equals(id)).FirstOrDefault();
