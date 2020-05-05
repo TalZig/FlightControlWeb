@@ -24,14 +24,20 @@ namespace FlightControl.Controllers
         [HttpGet("{id}", Name = "GetFPC")]
         public JsonResult Get(string id)
         {
+            FlightsPlans.init();
             return new JsonResult(FlightsPlans.GetFlightPlanById(id));
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] FlightPlan value)
+        public void Post([FromBody] string value)
         {
             FlightsPlans.AddFlightPlan(value);
+        }
+        public void Post([FromBody] JsonOptions value)
+        {
+            string s = value.ToString();
+            FlightsPlans.AddFlightPlan(s);
         }
 
         // PUT: api/FlightPlan/5
