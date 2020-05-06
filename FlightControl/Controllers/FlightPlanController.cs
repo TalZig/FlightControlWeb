@@ -22,7 +22,7 @@ namespace FlightControl.Controllers
 
         // GET: api/FlightPlan/5
         [HttpGet("{id}", Name = "GetFPC")]
-        public JsonResult Get(string id)
+        public JsonResult Get(int id)
         {
             FlightsPlans.init();
             return new JsonResult(FlightsPlans.GetFlightPlanById(id));
@@ -30,14 +30,15 @@ namespace FlightControl.Controllers
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] FlightPlan value)
+        public FlightPlan Post([FromBody] FlightPlan value)
         {
             FlightsPlans.AddFlightPlan(value);
+            return value;
         }
 
         // PUT: api/FlightPlan/5
         [HttpPut("{id}")]
-        public void Put(string id, [FromBody] Flight flight)
+        public void Put(int id, [FromBody] Flight flight)
         {
 
         }

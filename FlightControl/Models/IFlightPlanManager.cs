@@ -10,6 +10,6 @@ namespace FlightControl.Models
     {
         void AddFlightPlan(FlightPlan f);
 
-        FlightPlan GetFlightPlanById(string id);
+        FlightPlan GetFlightPlanById(int id);
     }
 }

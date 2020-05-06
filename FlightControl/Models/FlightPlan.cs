@@ -20,17 +20,17 @@ namespace FlightControl.Models
 {
     public class FlightPlan
     {
-        [JsonPropertyName("flight")]
-        public Flight flight { get; set; }
+/*        [JsonPropertyName("flight")]
+        public Flight flight { get; set; }*/
         [JsonPropertyName("passengers")]
-        public int Passengers { get; set; }
+        public int passengers { get; set; }
         [JsonPropertyName("company_name")]
-        public string Company_name { get; set; }
+        public string company_name { get; set; }
 
         [JsonPropertyName("initial_location")]
         public Initial_location Initial_Location { get; set; }
         [JsonPropertyName("segments")]
-        public List<Segments> Segments{ get; set; }
+        public List<Segments> segments{ get; set; }
     }
 
 
