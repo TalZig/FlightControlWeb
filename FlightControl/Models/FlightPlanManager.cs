@@ -18,7 +18,7 @@ namespace FlightControl.Models
         {
             FlightPlans.Add(new FlightPlan());
             //FlightPlans[0].company_name = "swiss";
-            FlightPlans[0].passengers = 50;
+            FlightPlans[0].Passengers = 50;
             FlightPlans[0].flight = new Flight();
             FlightPlans[0].flight.Flight_id = "0";
             j++;

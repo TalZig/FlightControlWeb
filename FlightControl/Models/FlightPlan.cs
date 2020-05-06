@@ -5,9 +5,15 @@ using System.Web;
 using System.Text.Json.Serialization;
 public struct Segments
 {
+    public double longtitude { get; set; }
+    public double latitude { get; set; }
+    public long timespan_seconds { get; set; }
+}
+public struct Initial_location
+{
     public double Longtitude { get; set; }
     public double Latitude { get; set; }
-    public long Timespan_seconds { get; set; }
+    public DateTime Date_time { get; set; }
 }
 
 namespace FlightControl.Models
@@ -17,16 +23,14 @@ namespace FlightControl.Models
         [JsonPropertyName("flight")]
         public Flight flight { get; set; }
         [JsonPropertyName("passengers")]
-        public int passengers { get; set; }
+        public int Passengers { get; set; }
         [JsonPropertyName("company_name")]
-        public string company_name { get; set; }
-        public struct Initial_location
-        {
-            public double Longtitude { get; set; }
-            public double Latitude { get; set; }
-            public DateTime Date_time { get; set; }
-        }
-        public List<Segments> Segments { get; set; }
+        public string Company_name { get; set; }
+
+        [JsonPropertyName("initial_location")]
+        public Initial_location Initial_Location { get; set; }
+        [JsonPropertyName("segments")]
+        public List<Segments> Segments{ get; set; }
     }
 
 
