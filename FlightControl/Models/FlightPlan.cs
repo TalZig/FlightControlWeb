@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.Text.Json.Serialization;
 public struct Segments
 {
     public double Longtitude { get; set; }
@@ -14,8 +14,11 @@ namespace FlightControl.Models
 {
     public class FlightPlan
     {
+        [JsonPropertyName("flight")]
         public Flight flight { get; set; }
+        [JsonPropertyName("passengers")]
         public int passengers { get; set; }
+        [JsonPropertyName("company_name")]
         public string company_name { get; set; }
         public struct Initial_location
         {

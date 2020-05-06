@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightControl.Models
 {
-    interface IServersManager
+    public interface IServersManager
     {
         void DeleteServer(string id);
 

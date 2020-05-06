@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Text.Json.Serialization;
 
 namespace FlightControl.Models
 {
@@ -9,8 +10,10 @@ namespace FlightControl.Models
     {
         public double Longtitude { get; set; }
         public double Latitude { get; set; }
-        public int Passengers { get; set; }
-        public string Company_name { get; set; }
+
+        //jsonPropertyNames[("passengers")]
+        public int passengers { get; set; }
+        public string company_name { get; set; }
         public string Flight_id { get; set; }
         public bool Is_external { get; set; }
         public DateTime Date_time { get; set; }

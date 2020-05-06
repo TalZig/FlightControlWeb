@@ -11,7 +11,7 @@ namespace FlightControl.Controllers
     [ApiController]
     public class ServerController : ControllerBase
     {
-        public static ServersManger servers = new ServersManger();
+        public static IServersManager servers = new ServersManager();
         // GET: api/Server
         [HttpGet]
         public IEnumerable<Server> Get()

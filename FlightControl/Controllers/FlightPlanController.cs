@@ -11,13 +11,13 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        FlightPlanManager FlightsPlans = new Models.FlightPlanManager();
+        static FlightPlanManager FlightsPlans = new FlightPlanManager();
         // GET: api/FlightPlan
         [HttpGet]
         public JsonResult Get()
         {
             FlightsPlans.init();
-            return new JsonResult(FlightsPlans.FlightPlans[0]);
+            return new JsonResult(FlightsPlans.FlightPlans);
         }
 
         // GET: api/FlightPlan/5
@@ -30,14 +30,9 @@ namespace FlightControl.Controllers
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] FlightPlan value)
         {
             FlightsPlans.AddFlightPlan(value);
-        }
-        public void Post([FromBody] JsonOptions value)
-        {
-            string s = value.ToString();
-            FlightsPlans.AddFlightPlan(s);
         }
 
         // PUT: api/FlightPlan/5

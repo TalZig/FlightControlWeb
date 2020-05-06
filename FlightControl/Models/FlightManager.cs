@@ -16,6 +16,10 @@ namespace FlightControl.Models
                 flights.Remove(flight);
             }
         }
+        public void AddFlight(Flight f)
+        {
+            flights.Add(f);
+        }
         public List<Flight> Relative_To_Sync(DateTime date)
         {
             List<Flight> relativeFlights = (List<Flight>) flights.Where(x => x.Date_time.Equals(date));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightControl.Models
 {
-    interface IFlightManager
+    public interface IFlightManager
     {
         void DeleteFlight(string id);
 

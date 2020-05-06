@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightControl.Models
 {
-    interface IFlightPlanManager
+    public interface IFlightPlanManager
     {
         void AddFlightPlan(FlightPlan f);
 

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace FlightControl.Models
 {
-    public class ServersManger :IServersManager
+    public class ServersManager :IServersManager
     {
         private static List<Server> Servers = new List<Server>();
         public void DeleteServer(string id)

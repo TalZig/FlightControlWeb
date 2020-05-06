@@ -12,14 +12,16 @@ namespace FlightControl.Models
 {
     public class FlightPlanManager : IFlightPlanManager
     {
+        public int j = 0;
         public List<FlightPlan> FlightPlans = new List<FlightPlan>();
         public void init()
         {
             FlightPlans.Add(new FlightPlan());
-            FlightPlans[0].company_name = "swiss";
-            FlightPlans[0].passengers = 20;
+            //FlightPlans[0].company_name = "swiss";
+            FlightPlans[0].passengers = 50;
             FlightPlans[0].flight = new Flight();
             FlightPlans[0].flight.Flight_id = "0";
+            j++;
         }
         
 

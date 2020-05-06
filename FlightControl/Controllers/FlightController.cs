@@ -29,8 +29,10 @@ namespace FlightControl.Controllers
 
         // POST: api/Flight
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Flight flight)
         {
+            Flights.AddFlight(flight);
+            Console.WriteLine(flight.passengers);
         }
 
         // PUT: api/Flight/5
