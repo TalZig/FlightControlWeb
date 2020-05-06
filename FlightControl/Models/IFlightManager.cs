@@ -8,7 +8,7 @@ namespace FlightControl.Models
 {
     public interface IFlightManager
     {
-        void DeleteFlight(string id);
+        void DeleteFlight(int id);
 
         List<Flight> Relative_To_Sync(DateTime date);
 

@@ -11,13 +11,13 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        static FlightPlanManager FlightsPlans = new FlightPlanManager();
+        public static FlightPlanManager FlightsPlans = new FlightPlanManager();
         // GET: api/FlightPlan
         [HttpGet]
         public JsonResult Get()
         {
-            FlightsPlans.init();
-            return new JsonResult(FlightsPlans.FlightPlans);
+            //FlightsPlans.init();
+            return new JsonResult(FlightsPlans.FlightPlans.ToList());
         }
 
         // GET: api/FlightPlan/5
