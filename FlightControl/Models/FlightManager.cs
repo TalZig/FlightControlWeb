@@ -19,7 +19,7 @@ namespace FlightControl.Models
         {
             flights.Add(f);
         }*/
-        public List<Flight> Relative_To_Sync(DateTime date)
+        public List<Flight> Relative_To_Sync(string date)
         {
             List<Flight> flights = new List<Flight>();
             List<FlightPlan> relativeFlights = (List<FlightPlan>)FlightPlanController.FlightsPlans.FlightPlans.Where(x => x.Value.Initial_Location.Date_time.Equals(date));
@@ -38,7 +38,7 @@ namespace FlightControl.Models
             }
             return flights;
         }
-        public List<Flight> Relative_To(DateTime date)
+        public List<Flight> Relative_To(string date)
         {
             List<Flight> flights = new List<Flight>();
             List<FlightPlan> relativeFlights = (List<FlightPlan>)FlightPlanController.FlightsPlans.FlightPlans.Where(x => x.Value.Initial_Location.Date_time.Equals(date));

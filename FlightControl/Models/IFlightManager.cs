@@ -10,8 +10,8 @@ namespace FlightControl.Models
     {
         void DeleteFlight(int id);
 
-        List<Flight> Relative_To_Sync(DateTime date);
+        List<Flight> Relative_To_Sync(string date);
 
-        List<Flight> Relative_To(DateTime date);
+        List<Flight> Relative_To(string date);
     }
 }
