@@ -11,9 +11,11 @@ public struct Segments
 }
 public struct Initial_location
 {
+    
     public double Longtitude { get; set; }
     public double Latitude { get; set; }
-    public DateTime Date_time { get; set; }
+    [JsonPropertyName("date_time")]
+    public String Date_time { get; set; }
 }
 
 namespace FlightControl.Models
