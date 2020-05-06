@@ -41,7 +41,7 @@ namespace FlightControl.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public void Delete(int id)
         {
             Flights.DeleteFlight(id);
         }

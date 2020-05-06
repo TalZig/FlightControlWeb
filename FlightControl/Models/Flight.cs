@@ -14,7 +14,7 @@ namespace FlightControl.Models
         //jsonPropertyNames[("passengers")]
         public int passengers { get; set; }
         public string company_name { get; set; }
-        public string Flight_id { get; set; }
+        public int Flight_id { get; set; }
         public bool Is_external { get; set; }
         public DateTime Date_time { get; set; }
 
