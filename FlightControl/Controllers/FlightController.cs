@@ -12,7 +12,7 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightController : ControllerBase
     {
-        public static FlightManager Flights = new FlightManager();
+        public static IFlightManager Flights = new FlightManager();
         // GET: api/Flight
         [HttpGet]
         public IEnumerable<string> Get()
@@ -31,8 +31,6 @@ namespace FlightControl.Controllers
         [HttpPost]
         public void Post([FromBody] Flight flight)
         {
-            Flights.AddFlight(flight);
-            Console.WriteLine(flight.passengers);
         }
 
         // PUT: api/Flight/5
