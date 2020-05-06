@@ -10,7 +10,6 @@ function onDrop(ev) {
         let flightURL = "../api/FlightPlan";
     }
 }
-
 function onDragOver(ev) {
     $("#dragArea").hide();
     $("#dragAndDrop").show();
