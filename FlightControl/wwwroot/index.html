@@ -5,12 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Flight Control Project By Tal And Yoel</title>
+    <title>Flight Control Project By Neria, Amitai, Tal And Yoel</title>
 
-    <meta name="description" content="Source code generated using layoutit.com">
-    <meta name="author" content="LayoutIt!">
-
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
   </head>
@@ -18,12 +15,10 @@
 
     <div class="container-fluid">
 		<div class="row">
-			<!--<div class="jumbotron" id="mapZone">-->
 			<div class="col-md-8" id="map"></div>
-			<!--</div>-->
 			<div class="col-md-4">
-				<div class="jumbotron" id="dragArea">
-					<table class="table" id="intern_table" ondragover="onDragOver(event);" ondrop="onDrop(event);">
+				<div class="jumbotron" id="upperTable">
+					<table class="table" id="intern_table">
 						<thead>
 							<tr>
 								<th>
@@ -49,57 +44,57 @@
 							</tr>
 						</tbody>
 					</table>
+					<form id="upload" action="api/FlightPlan" method="post">
+						<input type="file" id="myFile" name="filename">
+						<input type="submit">
+					</form>
 				</div>
-				<!--<div class="jumbotron" id="dragAndDrop">-->
-				<img id="dragAndDrop" src="../images/dd_8_80.jpg" alt="Drag Zone" style="object-fit:cover">
-				<!--</div>-->
 			</div>
 		</div>
-	<div class="row">
-		<div class="col-md-8">
-			<div class="jumbotron">
-				<p id="details">
-		Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
-	</p>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="jumbotron">
+					<p id="details">
+						Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+					</p>
+				</div>
 			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="jumbotron">
-				<table class="table" id="extern_table">
-					<thead>
-						<tr>
-							<th>
-								External Flights
-							</th>							
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								4
-							</td>
-						</tr>
-						<tr class="table-success">
-							<td>
-								5
-							</td>							
-						</tr>
-						<tr class="table-warning">
-							<td>
-								6
-							</td>						
-						</tr>
-					</tbody>
-				</table>
+			<div class="col-md-4">
+				<div class="jumbotron" id="lowerTable">
+					<table class="table" id="extern_table">
+						<thead>
+							<tr>
+								<th>
+									External Flights
+								</th>							
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									4
+								</td>
+							</tr>
+							<tr class="table-success">
+								<td>
+									5
+								</td>							
+							</tr>
+							<tr class="table-warning">
+								<td>
+									6
+								</td>						
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-	<script src="js/TableScripts.js"></script>
     <script>
 
       // This example creates a 2-pixel-wide red polyline showing the path of
@@ -139,8 +134,5 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
     </script>
-	<script>
-		document.getElementById("dragAndDrop").style.display = "none";
-	</script>
   </body>
 </html>

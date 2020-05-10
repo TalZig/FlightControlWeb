@@ -20,5 +20,13 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <None Include="wwwroot\bootstrap\css\bootstrap.min.css" />
+    <None Include="wwwroot\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\bootstrap\js\jquery-3.4.1.slim.min.js" />
+    <None Include="wwwroot\bootstrap\js\popper.min.js" />
+  </ItemGroup>
+
 
 </Project>
