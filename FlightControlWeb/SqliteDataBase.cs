@@ -244,7 +244,7 @@ namespace FlightControl
             return returnVal;
         }
         // Function that set the latitude and longitude according where the flight is.
-        private void SetCurrentCoordinates(DateTime dateTimeRequest, DateTime startFlight, List<Segment> segmentList, 
+        private void SetCurrentCoordinates(DateTime dateTimeRequest, DateTime startFlight, List<Segment> segmentList,
             Flight flight, InitialLocation initialLocation)
         {
             DateTime dateTimeTemp = startFlight;
@@ -258,7 +258,7 @@ namespace FlightControl
                 dateTimeTemp = dateTimeTemp.AddSeconds(segmentList[i].Timespan_Seconds);
                 sumOfSeconds += segmentList[i].Timespan_Seconds;
                 i++;
-            } while (dateTimeRequest.CompareTo(dateTimeTemp) >= 0 && i<segmentList.Count);
+            } while (dateTimeRequest.CompareTo(dateTimeTemp) >= 0 && i < segmentList.Count);
             // Get coordinates of start and end.double latitude1
             if (i >= 2)
             {
@@ -277,11 +277,11 @@ namespace FlightControl
         // Function for calculating the update of longitude and latitude according of given leftTime
         // And segment. In this Function we will calculate the partOfSegment that the flight pass for
         // Help calculate longitude and latitude.
-        private void CalculateNewLongitudeLatitude(Flight flight, double givenLatitude, double givenLongitude, 
+        private void CalculateNewLongitudeLatitude(Flight flight, double givenLatitude, double givenLongitude,
             double leftTime, Segment segment)
         {
             double latitude = segment.Latitude;
-            double longitude= segment.Longitude;
+            double longitude = segment.Longitude;
             double partOfSegment = leftTime / segment.Timespan_Seconds;
             flight.Latitude = GetCurrentLatitude(givenLatitude, latitude, partOfSegment);
             flight.Longitude = GetCurrentLongitude(givenLongitude, longitude, partOfSegment);
@@ -295,24 +295,6 @@ namespace FlightControl
         private double GetCurrentLongitude(double longitude1, double longitude2, double partOfSegment)
         {
             return (longitude2 - longitude1) * partOfSegment + longitude1;
-        }
-        // Function that return only the internal flights according to the given dateTime.
-        public List<Flight> GetFlightsByDateTime(string stringDateTime)
-        {
-            DateTime dateTime = ConvertToDateTime(stringDateTime);
-            // Get all internal flights.
-            List<string> idList = GetIdListOfExternalOrInternal("false");
-            // From the internal flights, take only the activated.
-            List<string> idListActivated = GetIdListActivated(idList, dateTime);
-            if (idListActivated == null) { return null; }
-            List<Flight> flightList = new List<Flight>();
-            int i = 0, j = 0;
-            // For loop in order to make flightList.
-            for (; i < idListActivated.Count; ++i, ++j)
-            {
-                flightList.Add(AddFlightWithDateTimeAndIsExternal(idListActivated[i], dateTime, "false"));
-            }
-            return flightList;
         }
         // Function that returns the segmentList according to given id.
         private List<Segment> GetSegmentList(string id)
@@ -364,31 +346,49 @@ namespace FlightControl
             SetCurrentCoordinates(dateTime, dateTimeOfIdFlight, segmentList, flight, initialLocation);
             return flight;
         }
+        // Function that return only the internal flights according to the given dateTime.
+        public List<Flight> GetFlightsByDateTime(string stringDateTime)
+        {
+            // Get all internal flights.
+            List<Flight> internalFlightList = GetActivatedFlightsIsExternal(stringDateTime, "false");
+            return internalFlightList;
+        }
         // Function that returns the internal and external flights according to the given dateTime.
         public List<Flight> GetFlightsByDateTimeAndSync(string stringDateTime)
         {
-            DateTime dateTime = ConvertToDateTime(stringDateTime);
-            // Get id list of external flights.
-            List<string> idListActivated = GetIdListActivated(GetIdListOfExternalOrInternal("true"), dateTime);
             // Get the internal flights.
             List<Flight> internalFlightList = GetFlightsByDateTime(stringDateTime);
-            List<Flight> flightList = new List<Flight>();
-            // There are no flights that compatible to the givven dateTime.
-            if (idListActivated == null && internalFlightList == null) { return null; }
-            if (idListActivated != null)
+            // Get the external flights.
+            List<Flight> externalFlightList = GetActivatedFlightsIsExternal(stringDateTime, "true");
+            // There are no external or internal flights that compatible to the givven dateTime.
+            if (externalFlightList == null && internalFlightList == null) { return null; }
+            // There are external and internal flights that compatible to the givven dateTime.
+            if (externalFlightList != null && internalFlightList != null)
             {
-                int i = 0;
-                // Add the external flights.
-                for (; i < idListActivated.Count; ++i)
-                {
-                    flightList.Add(AddFlightWithDateTimeAndIsExternal(idListActivated[i], dateTime, "true"));
-                }
-                // If the internalFlight List is not null, then merge between the lists.
-                if (internalFlightList != null) { flightList.AddRange(internalFlightList); }
-                return flightList;
+                externalFlightList.AddRange(internalFlightList);
+                return externalFlightList;
             }
-            // If flightList is null.
+            // There are only external flights that compatible to the givven dateTime.
+            if (externalFlightList != null) { return externalFlightList; }
+            // There are only internal flights that compatible to the givven dateTime.
             return internalFlightList;
+        }
+        private List<Flight> GetActivatedFlightsIsExternal(string stringDateTime, string isExternal)
+        {
+            List<Flight> flightList = new List<Flight>();
+            DateTime dateTime = ConvertToDateTime(stringDateTime);
+            // Get all flights according to given isExternal - internal/external.
+            List<string> idList = GetIdListOfExternalOrInternal(isExternal);
+            // Get id list of flights according to given isExternal - internal/external.
+            List<string> idListActivated = GetIdListActivated(idList, dateTime);
+            if (idListActivated == null) { return null; }
+            int i = 0;
+            // Add the external flights.
+            for (; i < idListActivated.Count; ++i)
+            {
+                flightList.Add(AddFlightWithDateTimeAndIsExternal(idListActivated[i], dateTime, isExternal));
+            }
+            return flightList;
         }
 
         public Flight CreateFlight(string isExternal, string id, string dateTime)

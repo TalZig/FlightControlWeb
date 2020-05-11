@@ -44,6 +44,7 @@ namespace FlightControl
             {
                 endpoints.MapControllers();
             });
+            SqliteDataBase.InitializeSqliteDataBase();
         }
     }
 }
