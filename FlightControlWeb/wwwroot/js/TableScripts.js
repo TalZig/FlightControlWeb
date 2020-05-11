@@ -8,7 +8,14 @@ function onDrop(ev) {
         let file = ev.dataTransfer.items[0].getAsFile();
         document.getElementById("details").innerHTML = file.name;
         let flightURL = "../api/FlightPlan";
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", flightURL, true);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.send(file);
     }
+}
+function allowDrop(ev) {
+    ev.preventDefault();
 }
 function onDragOver(ev) {
     $("#dragArea").hide();

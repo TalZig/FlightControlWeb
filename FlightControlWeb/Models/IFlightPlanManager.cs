@@ -8,8 +8,8 @@ namespace FlightControl.Models
 {
     public interface IFlightPlanManager
     {
-        void AddFlightPlan(FlightPlan f);
-
-        FlightPlan GetFlightPlanById(int id);
+        FlightPlan GetFlightPlanById(string id);
+        string AddFlightPlan(FlightPlan flightPlan);
+        bool DeleteFlightPlanById(string id);
     }
 }

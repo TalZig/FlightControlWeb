@@ -12,34 +12,20 @@ namespace FlightControl.Models
 {
     public class FlightPlanManager : IFlightPlanManager
     {
-        public int j = 0;
-        public Dictionary<int,FlightPlan> FlightPlans = new Dictionary<int, FlightPlan>();
-        public void init()
+        private static SqliteDataBase sqliteDataBase = new SqliteDataBase();
+        public string AddFlightPlan(FlightPlan flightPlan)
         {
-            FlightPlans.Add(0, new FlightPlan());
-            //FlightPlans[0].company_name = "swiss";
-            FlightPlans[0].passengers = 50;
-/*            FlightPlans[0].flight = new Flight();
-            FlightPlans[0].flight.Flight_id = "0";*/
-            j++;
+            return sqliteDataBase.AddFlightPlan(flightPlan);
         }
 
-         public void DeleteFlightPlan(int id)
-         {
-            if(FlightPlans.ContainsKey(id))
-                FlightPlans.Remove(id);
-         }
-        public void AddFlightPlan(FlightPlan f)
+        public FlightPlan GetFlightPlanById(string id)
         {
-            Random random = new Random();
-            int r = random.Next(0, 1000000);
-            while (FlightPlans.ContainsKey(r))
-                r = random.Next(0, 1000000);
-            FlightPlans.Add(r, f);
+            return sqliteDataBase.GetFlightPlanById(id);
         }
-        public FlightPlan GetFlightPlanById(int id)
+
+        public bool DeleteFlightPlanById(string id)
         {
-            return FlightPlans[id];
+            return sqliteDataBase.DeleteFlightPlanFromTable(id);
         }
 
     }

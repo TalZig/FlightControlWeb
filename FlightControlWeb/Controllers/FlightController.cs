@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FlightControl.Models;
+using System.Text.RegularExpressions;
 
 namespace FlightControl.Controllers
 {
@@ -12,19 +13,34 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightController : ControllerBase
     {
-        public static IFlightManager Flights = new FlightManager();
-        // GET: api/Flight
+        private IFlightManager flightManager = new FlightManager();
+        // GET: api/Flights/5
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<Flight> Get([FromQuery] string relative_To)
         {
-            return new string[] { "value1", "value2" };
+            string urlRequest = Request.QueryString.Value;
+            string date = relative_To.Substring(1, 20);
+            IEnumerable<Flight> flightList = new List<Flight>();
+            if (urlRequest.Contains("sync_all"))
+            {
+                flightList = flightManager.GetFlightsByDateTimeAndSync(date);
+            }
+            else
+            {
+                flightList = flightManager.GetFlightsByDateTime(date);
+            }
+            if (flightList == null) { return NotFound(flightList); }
+            return Ok(flightList);
         }
-
-        // GET: api/Flight/5
-        [HttpGet("{id}", Name = "GetFC")]
-        public string Get(int id)
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
         {
-            return "blabla";
+            if (flightManager.DeleteFlightById(id))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // POST: api/Flight
@@ -37,13 +53,6 @@ namespace FlightControl.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            Flights.DeleteFlight(id);
         }
     }
 }

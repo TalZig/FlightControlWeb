@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Flight Control Project By Neria, Amitai, Tal And Yoel</title>
+
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-md-8" id="map"></div>
+			<div class="col-md-4">
+				<div class="jumbotron" id="upperTable">
+					<table class="table" id="intern_table">
+						<thead>
+							<tr>
+								<th>
+									Internal Flights
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									1
+								</td>
+							</tr>
+							<tr class="table-success">
+								<td>
+									2
+								</td>
+							</tr>
+							<tr class="table-warning">
+								<td>
+									3
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<form id="upload" action="api/FlightPlan" method="post">
+						<input type="file" id="myFile" name="filename">
+						<input type="submit">
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="jumbotron">
+					<p id="details">
+						Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Aliquam eget sapien sapien. Curabitur in metus urna. In hac habitasse platea dictumst. Phasellus eu sem sapien, sed vestibulum velit. Nam purus nibh, lacinia non faucibus et, pharetra in dolor. Sed iaculis posuere diam ut cursus. <em>Morbi commodo sodales nisi id sodales. Proin consectetur, nisi id commodo imperdiet, metus nunc consequat lectus, id bibendum diam velit et dui.</em> Proin massa magna, vulputate nec bibendum nec, posuere nec lacus. <small>Aliquam mi erat, aliquam vel luctus eu, pharetra quis elit. Nulla euismod ultrices massa, et feugiat ipsum consequat eu.</small>
+					</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="jumbotron" id="lowerTable">
+					<table class="table" id="extern_table">
+						<thead>
+							<tr>
+								<th>
+									External Flights
+								</th>							
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									4
+								</td>
+							</tr>
+							<tr class="table-success">
+								<td>
+									5
+								</td>							
+							</tr>
+							<tr class="table-warning">
+								<td>
+									6
+								</td>						
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script>
+
+      // This example creates a 2-pixel-wide red polyline showing the path of
+      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+      // Australia which was made by Charles Kingsford Smith.
+
+      function initMap() {
+          let map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 6,
+          center: {lat: 32.009444, lng: 34.876944},
+          mapTypeId: 'terrain'
+        });
+
+        let flightPlanCoordinates = [
+          {lat: 37.772, lng: -122.214},
+          {lat: 21.291, lng: -157.821},
+          {lat: -18.142, lng: 178.431},
+          {lat: -27.467, lng: 153.027}
+        ];
+                  let marker = new google.maps.Marker({
+          // The below line is equivalent to writing:
+          // position: new google.maps.LatLng(-34.397, 150.644)
+          position: {lat: 32.009444, lng: 34.876944},
+          map: map
+        });
+        let flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
+    </script>
+  </body>
+</html>

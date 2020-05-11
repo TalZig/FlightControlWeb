@@ -11,29 +11,36 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        public static FlightPlanManager FlightsPlans = new FlightPlanManager();
-        // GET: api/FlightPlan
-        [HttpGet]
-        public JsonResult Get()
-        {
-            //FlightsPlans.init();
-            return new JsonResult(FlightsPlans.FlightPlans.ToList());
-        }
-
+        private static IFlightPlanManager flightPlanManager = new FlightPlanManager();
         // GET: api/FlightPlan/5
-        [HttpGet("{id}", Name = "GetFPC")]
-        public JsonResult Get(int id)
+        [HttpGet("{id}", Name = "GetFlightPlan")]
+        public ActionResult GetFlightPlan(string id)
         {
-            FlightsPlans.init();
-            return new JsonResult(FlightsPlans.GetFlightPlanById(id));
+            FlightPlan flightPlan = flightPlanManager.GetFlightPlanById(id);
+            if (flightPlan != null)
+            {
+                return Ok(flightPlan);
+            }
+            return NotFound(flightPlan);
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public FlightPlan Post([FromBody] FlightPlan value)
+        public ActionResult Post([FromBody] FlightPlan flightPlan)
         {
-            FlightsPlans.AddFlightPlan(value);
-            return value;
+            string idOfAddedFlightPlan = flightPlanManager.AddFlightPlan(flightPlan);
+            return CreatedAtAction(actionName: "GetFlightPlan", new { id = idOfAddedFlightPlan }, flightPlan);
+        }
+
+        // DELETE: api/FlightPlan/5
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
+        {
+            if (flightPlanManager.DeleteFlightPlanById(id))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // PUT: api/FlightPlan/5
@@ -41,12 +48,6 @@ namespace FlightControl.Controllers
         public void Put(int id, [FromBody] Flight flight)
         {
 
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
