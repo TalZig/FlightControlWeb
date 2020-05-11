@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -47,25 +48,18 @@ namespace FlightControl
         {
             OpenConnection();
             // Random id.
-            string id = SetRandId();
+            string id = CreateRandomLetters(10);
             AddToFlightPlanTable(flightPlan, id);
             AddToInitialLocationTable(flightPlan, id);
             AddListToSegmentTable(flightPlan.Segments, id);
             CloseConnection();
             return id;
         }
-        // Function that choose random id that contains letters and numbers.
-        private string SetRandId()
-        {
-            Random random = new Random();
-            long randomNumber = random.Next(100000, 1000000000);
-            return CreateRandomLetters(2) + randomNumber.ToString().Substring(0, 5) + CreateRandomLetters(3);
-        }
         // Function that choose random letters according to the given parameter - length.
         private string CreateRandomLetters(int length)
         {
             Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
         // Add to FlightPlanSQL.
@@ -133,28 +127,25 @@ namespace FlightControl
         {
             // Take the line from FlightPlanSQL which the Id equals to id.
             object[] lineFlightPlanSQL = GetLineInformationFromSQLWithCommand("SELECT * FROM FlightPlanSQL WHERE Id=\"" + id + "\"");
-            // Take the line from InitialLocationSQL which the Id equals to id.
-            object[] lineInitialLocationSQL = GetLineInformationFromSQLWithCommand("SELECT * FROM InitialLocationSQL WHERE Id=\"" + id + "\"");
-            // Take list of Segment from SegmentSQL which the Id equals to id.
-            List<object[]> listSegmentSQL = GetListOfInformationFromSQLWithCommand("SELECT * FROM SegmentSQL WHERE Id=\"" + id + "\"");
-            if (lineFlightPlanSQL != null && lineInitialLocationSQL != null && listSegmentSQL != null)
+            // If this id is not exist then return null. Otherwise, set a FlightPlan.
+            if (lineFlightPlanSQL != null)
             {
-                return SetFlightPlanByListObjects(lineFlightPlanSQL, lineInitialLocationSQL, listSegmentSQL);
+                return SetFlightPlanByListObjects(lineFlightPlanSQL, id);
             }
             return null;
         }
         // Function that get the objects and turns them to properties of FlightPlan.
-        private FlightPlan SetFlightPlanByListObjects(object[] lineFlightPlanSQL, object[] lineInitialLocationSQL, List<object[]> listSegmentSQL)
+        private FlightPlan SetFlightPlanByListObjects(object[] lineFlightPlanSQL, string id)
         {
             // Set the properties while using lineFlightPlanSQL and lineInitialLocationSQL.
             FlightPlan flightPlan = new FlightPlan
             {
                 Passengers = Convert.ToInt32(lineFlightPlanSQL[1]),
                 Company_name = lineFlightPlanSQL[2].ToString(),
-                Location = GetInitialLocation(lineFlightPlanSQL[0].ToString())
+                Location = GetInitialLocation(id)
             };
             // Set the Segment list while using listSegmentSQL.
-            flightPlan.Segments = ChangeListObjectToListSegment(listSegmentSQL);
+            flightPlan.Segments = GetSegmentList(id);
             return flightPlan;
         }
         // Function that returns list of information according to the textCommand.
