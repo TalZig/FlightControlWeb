@@ -22,13 +22,13 @@ function initializeTable() {
     console.log(dateTime);
 
     let request = new XMLHttpRequest();
-    request.onreadystatechange = function() {
+    /*request.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             console.log(this.responseText);
         }
-    };
-    request.open("GET", "/api/Flights?relative_to<" + dateTime + ">", true);
-    //request.onload = parse(request);
+    };*/
+    request.open("GET", "/api/Flights?relative_to=<" + dateTime + ">", true);
+    request.onload = parse(request);
     request.send();
 }
 
@@ -46,4 +46,10 @@ function populateTable(json) {
     console.log(json);
 }
 
-initializeTable();
+//initializeTable();
+
+function DisplayFlights() {
+    let date = new Date().toISOString();
+    console.log(date);
+    $.getJSON("/api/Flights?relative_to=<"+)
+}
