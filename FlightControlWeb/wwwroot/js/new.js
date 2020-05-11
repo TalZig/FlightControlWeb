@@ -1,3 +1,3 @@
-﻿const table = document.getElementById("intern_table");
+﻿const table = document.querySelector("intern_table > tbody");
 
 console.log(table);

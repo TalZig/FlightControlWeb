@@ -3,9 +3,15 @@ function initializeTable() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
     dateTime = dateTime.concat("-");
-    dateTime = dateTime.concat((d.getMonth() + 1).toString());
+    let month = d.getMonth() + 1;
+    if (month < 10)
+        dateTime = dateTime.concat("0");
+    dateTime = dateTime.concat(month.toString());
     dateTime = dateTime.concat("-");
-    dateTime = dateTime.concat((d.getDay()).toString());
+    let day = d.getDay();
+    if (day < 10)
+        dateTime = dateTime.concat("0");
+    dateTime = dateTime.concat(day.toString());
     dateTime = dateTime.concat("T");
     dateTime = dateTime.concat(d.getHours().toString());
     dateTime = dateTime.concat(":");
