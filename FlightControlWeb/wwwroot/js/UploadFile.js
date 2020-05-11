@@ -1,43 +1,26 @@
-﻿function submit1(file) {
-    let name = document.getElementById("myFile");
-    let todo = { "Id": 0, "IsComplete": false, "Name": name }
-    let postOptions = preparePost(todo)
-        //This uses the promises API: https://javascript.info/promise-basicsfetch
-        //("../api/FlightPlan/", postOptions)
-        // reads the body of the response as json
-        //.then(response => response.json()).
-        //then(appendItem).
-        //catch(error => console.log(error));
-    let flightURL = "../api/FlightPlan";
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", flightURL, true);
-    xhr.setRequestHeader("content-type", "application/json");
-    xhr.send(name);
-}
-let ContentType = "application/json";
-function preparePost(todo) {
-    let todoAsStr = JSON.stringify(todo);
-    return {
-        "method": "POST",
-        "headers": { 'Content-Type': ContentType },
-        "body": todoAsStr
+﻿// Empty JS for your own code to be here
+function onDrop(ev) {
+    ev.preventDefault();
+    document.getElementById("details").innerHTML = "drop";
+    document.getElementById("dragAndDrop").style.display = "none";
+    $("#dragArea").show();
+    if (ev.dataTransfer.items[0].kind === 'file') {
+        let file = ev.dataTransfer.items[0].getAsFile();
+        document.getElementById("details").innerHTML = file.name;
+        let flightURL = "../api/FlightPlan";
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", flightURL, true);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.send(file);
     }
 }
-document.getElementById('import').onclick = function () {
-    var files = document.getElementById('selectFiles').files;
-    console.log(files);
-    if (files.length <= 0) {
-        return false;
-    }
-
-    var fr = new FileReader();
-
-    fr.onload = function (e) {
-        console.log(e);
-        var result = JSON.parse(e.target.result);
-        var formatted = JSON.stringify(result, null, 2);
-        document.getElementById('result').value = formatted;
-    }
-
-    fr.readAsText(files.item(0));
-};
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+function onDragOver(ev) {
+    $("#dragArea").hide();
+    $("#dragAndDrop").show();
+    ev.preventDefault();
+    event.dataTransfer.setData("text/plain", event.target.id);
+    document.getElementById("details").innerHTML = "drag";
+}
