@@ -33,25 +33,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--<tr>
-                                <td>
-                                    1
-                                </td>
-                            </tr>
-                            <tr class="table-success">
-                                <td>
-                                    2
-                                </td>
-                            </tr>
-                            <tr class="table-warning">
-                                <td>
-                                    3
-                                </td>
-                            </tr>-->
                         </tbody>
                     </table>
                 </div>
-                <div class="jumbotron" id="dragAndDrop" ondrop="onDrop(event)" ondragover="allowDrop(event)" style="display:none">
+                <div class="jumbotron" id="dragAndDrop" ondrop="onDrop(event)" ondragover="allowDrop(event)" style="display:none"
+                     ondragleave="onDragLeave(event)">
                     <img src="images/dd_8_80.jpg" />
                 </div>
             </div>
@@ -81,21 +67,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--<tr>
-                                <td>
-                                    4
-                                </td>
-                            </tr>
-                            <tr class="table-success">
-                                <td>
-                                    5
-                                </td>
-                            </tr>
-                            <tr class="table-warning">
-                                <td>
-                                    6
-                                </td>
-                            </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -144,8 +115,11 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
     </script>
     <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/UploadFile.js"></script>
     <script src="js/TableScripts.js"></script>
+    <script src="js/new.js"></script>
 </body>
 </html>

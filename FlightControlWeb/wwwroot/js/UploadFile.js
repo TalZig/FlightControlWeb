@@ -24,3 +24,9 @@ function onDragOver(ev) {
     event.dataTransfer.setData("text/plain", event.target.id);
     document.getElementById("details").innerHTML = "drag";
 }
+
+function onDragLeave(ev) {
+    ev.preventDefault();
+    document.getElementById("dragAndDrop").style.display = "none";
+    $("#dragArea").show();
+}
