@@ -103,13 +103,9 @@ function DisplayFlights() {
         let c2 = row.insertCell(2);
         c2.innerHTML = "Passengers";
         c2.style.fontWeight = 'bold'
-        //table.append("<thead><tr><th>" + Flight.ID + "</th><th>" + Company + "</th><th>" + Passengers + "</th></tr></thead>")
         data.forEach(function (flight) {
             $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
             showOnMap(flight);
-
-
-     // google.maps.event.addDomListener(window, 'load', initialize);
         });
     });
 }
@@ -117,7 +113,6 @@ let iconCopy = {
     url: "../images/planeCopy.png", // url
     scaledSize: new google.maps.Size(50, 50), // scaled size
     origin: new google.maps.Point(0, 0), // origin
-    //        anchor: new google.maps.Point(0, 49) // anchor
 };
 //let markers = {};
 function showOnMap(flight) {
@@ -125,12 +120,9 @@ function showOnMap(flight) {
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(50, 50), // scaled size
         origin: new google.maps.Point(0, 0), // origin
-        //        anchor: new google.maps.Point(0, 49) // anchor
     };
     let posi = { lat: flight.latitude, lng: flight.longitude };
     let marker = new google.maps.Marker({
-        // The below line is equivalent to writing:
-        // position: new google.maps.LatLng(-34.397, 150.644)
         position: { lat: flight.latitude, lng: flight.longitude },
         map: map,
         title: flight.flight_id,
@@ -145,13 +137,23 @@ function showOnMap(flight) {
     });
 
     google.maps.event.addListener(marker, 'click', function (marker) {
-        //infowindow.open(map, marker);
-        //let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
-        let flightsUrl = "../api/FlightPlan/mINiRgxBJB";
-/*        let request = new XMLHttpRequest();
-        request.open("GET", flightsUrl, true);
-        request.onload = parse(request);*/
-        $.ajax({
+        let flightsUrl = "../api/FlightPlan/45oIhiuQJf";
+        let x = new XMLHttpRequest();
+        x.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let table = document.getElementById("tableFlights");
+                let row = table.insertRow(1);
+                let c0 = row.insertCell(0);
+                c0.innerHTML = flight.flight_id;
+                //$("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight1.longitude + "</td>" + "<td>" + flight1.latitude + "</td>" + "<td>" + flight1.passengers + "</td>" + "<td>" + flight1.company_name + "<td>" + flight1.date_time + "</td>" + "<td>" + flight1.is_external + "</td>" + "</td></tr>")
+            }
+        };
+        x.open("GET", flightsUrl, true);
+        x.setRequestHeader("content-type", "application/json");
+      
+        x.send();
+
+        /*$.ajax({
             url: flightsUrl,
             dataType: "jsonP",
             success: function (data) {
@@ -161,6 +163,6 @@ function showOnMap(flight) {
                     //showOnMap(flight);
                 });
             }
-        });
+        });*/
     });
 }
