@@ -91,7 +91,7 @@ function DisplayFlights() {
         //initialize the flights table (removing the old flights).
         let table = document.getElementById("intern_table");
         table.innerHTML = "";
-        //adding the new flights to the intern_table, moving flight by flight with for-each loop.
+        //adding the new flights to the intern_table, moving flight by flight with for-each loop .
         data.forEach(function (flight) {
             $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers  +"</td></tr>")
         });
