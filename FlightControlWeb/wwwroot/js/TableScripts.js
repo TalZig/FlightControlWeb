@@ -107,11 +107,27 @@ function DisplayFlights() {
         data.forEach(function (flight) {
             $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
             showOnMap(flight);
+
+
+     // google.maps.event.addDomListener(window, 'load', initialize);
         });
     });
 }
 
 function showOnMap(flight) {
+    var marker = new google.maps.Marker({
+        // The below line is equivalent to writing:
+        // position: new google.maps.LatLng(-34.397, 150.644)
+        position: { lat: flight.latitude, lng: flight.longitude },
+        map: map
+    });
+    var infowindow = new google.maps.InfoWindow({
+        content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+    });
+
+    google.maps.event.addListener(marker, 'click', function () {
+        infowindow.open(map, marker);
+    });
 
 }
 //initializeTable();
