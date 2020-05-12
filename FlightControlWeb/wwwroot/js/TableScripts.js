@@ -151,12 +151,16 @@ function showOnMap(flight) {
 /*        let request = new XMLHttpRequest();
         request.open("GET", flightsUrl, true);
         request.onload = parse(request);*/
-        $.getJSON(flightsUrl, function (data) {
-            console.log("check");
-            data.forEach(function (flight) {
-                $("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.longitude + "</td>" + "<td>" + flight.latitude + "</td>" + "<td>" + flight.passengers + "</td>" + "<td>" + flight.company_name + "<td>" + flight.date_time + "</td>" + "<td>" + flight.is_external + "</td>" + "</td></tr>")
-                //showOnMap(flight);
-            });
+        $.ajax({
+            url: flightsUrl,
+            dataType: "jsonP",
+            success: function (data) {
+                console.log("check");
+                data.forEach(function (flight1) {
+                    $("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight1.longitude + "</td>" + "<td>" + flight1.latitude + "</td>" + "<td>" + flight1.passengers + "</td>" + "<td>" + flight1.company_name + "<td>" + flight1.date_time + "</td>" + "<td>" + flight1.is_external + "</td>" + "</td></tr>")
+                    //showOnMap(flight);
+                });
+            }
         });
     });
 }
