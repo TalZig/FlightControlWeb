@@ -130,4 +130,3 @@ function showOnMap(flight) {
     });
 
 }
-//initializeTable();
