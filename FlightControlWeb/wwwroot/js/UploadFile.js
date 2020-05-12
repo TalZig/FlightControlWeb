@@ -1,7 +1,6 @@
 ﻿// Empty JS for your own code to be here
 function onDrop(ev) {
     ev.preventDefault();
-    //document.getElementById("details").innerHTML = "drop";
     document.getElementById("dragAndDrop").style.display = "none";
     $("#dragArea").show();
     if (ev.dataTransfer.items[0].kind === 'file') {
@@ -21,7 +20,6 @@ function onDragOver(ev) {
     $("#dragAndDrop").show();
     ev.preventDefault();
     event.dataTransfer.setData("text/plain", event.target.id);
-//    document.getElementById("details").innerHTML = "drag";
 }
 
 function onDragLeave(ev) {
