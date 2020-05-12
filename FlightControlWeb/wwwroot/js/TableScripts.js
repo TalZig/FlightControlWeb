@@ -92,9 +92,26 @@ function DisplayFlights() {
         let table = document.getElementById("intern_table");
         table.innerHTML = "";
         //adding the new flights to the intern_table, moving flight by flight with for-each loop .
+        let header = table.createTHead();
+        let row = header.insertRow();
+        let c0 = row.insertCell(0);
+        c0.innerHTML = "Flight.ID";
+        c0.style.fontWeight = 'bold'
+        let c1 = row.insertCell(1);
+        c1.innerHTML = "Company";
+        c1.style.fontWeight = 'bold'
+        let c2 = row.insertCell(2);
+        c2.innerHTML = "Passengers";
+        c2.style.fontWeight = 'bold'
+        //table.append("<thead><tr><th>" + Flight.ID + "</th><th>" + Company + "</th><th>" + Passengers + "</th></tr></thead>")
         data.forEach(function (flight) {
-            $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers  +"</td></tr>")
+            $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+            showOnMap(flight);
         });
     });
+}
+
+function showOnMap(flight) {
+
 }
 //initializeTable();
