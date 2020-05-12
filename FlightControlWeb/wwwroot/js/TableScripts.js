@@ -133,6 +133,7 @@ function showOnMap(flight) {
 
     let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+        + '<p>Flight ID:' + flight.flight_id + '</p>'
     });
 
     google.maps.event.addListener(marker, 'click', function () {
