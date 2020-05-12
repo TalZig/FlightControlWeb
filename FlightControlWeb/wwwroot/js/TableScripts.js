@@ -115,18 +115,26 @@ function DisplayFlights() {
 }
 
 function showOnMap(flight) {
-    var marker = new google.maps.Marker({
+    let icon = {
+        url: "../images/plane.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+    };
+
+    let marker = new google.maps.Marker({
         // The below line is equivalent to writing:
         // position: new google.maps.LatLng(-34.397, 150.644)
         position: { lat: flight.latitude, lng: flight.longitude },
-        map: map
+        map: map,
+        icon: icon
     });
-    var infowindow = new google.maps.InfoWindow({
+
+    let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
     });
 
     google.maps.event.addListener(marker, 'click', function () {
         infowindow.open(map, marker);
     });
-
 }
