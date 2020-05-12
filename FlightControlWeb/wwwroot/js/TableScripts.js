@@ -146,8 +146,13 @@ function showOnMap(flight) {
 
     google.maps.event.addListener(marker, 'click', function (marker) {
         //infowindow.open(map, marker);
-        let flightsUrl = "../api/FlightPlan/=" + marker.title;
+        //let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
+        let flightsUrl = "../api/FlightPlan/mINiRgxBJB";
+/*        let request = new XMLHttpRequest();
+        request.open("GET", flightsUrl, true);
+        request.onload = parse(request);*/
         $.getJSON(flightsUrl, function (data) {
+            console.log("check");
             data.forEach(function (flight) {
                 $("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.longitude + "</td>" + "<td>" + flight.latitude + "</td>" + "<td>" + flight.passengers + "</td>" + "<td>" + flight.company_name + "<td>" + flight.date_time + "</td>" + "<td>" + flight.is_external + "</td>" + "</td></tr>")
                 //showOnMap(flight);

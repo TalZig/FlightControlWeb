@@ -14,7 +14,7 @@ namespace FlightControl.Controllers
         private static IFlightPlanManager flightPlanManager = new FlightPlanManager();
         // GET: api/FlightPlan/5
         [HttpGet("{id}", Name = "GetFlightPlan")]
-        public ActionResult GetFlightPlan(string id)
+        public ActionResult GetFlightPlan([FromQuery]string id)
         {
             FlightPlan flightPlan = flightPlanManager.GetFlightPlanById(id);
             if (flightPlan != null)
