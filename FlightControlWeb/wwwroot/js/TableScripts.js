@@ -119,7 +119,7 @@ function showOnMap(flight) {
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(50, 50), // scaled size
         origin: new google.maps.Point(0, 0), // origin
-        anchor: new google.maps.Point(0, 0) // anchor
+//        anchor: new google.maps.Point(0, 49) // anchor
     };
 
     let marker = new google.maps.Marker({
@@ -129,6 +129,7 @@ function showOnMap(flight) {
         map: map,
         icon: icon
     });
+
 
     let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
