@@ -88,7 +88,7 @@ function DisplayFlights() {
     let flightsUrl = "../api/Flight?relative_to=<" + dateTime + ">"
     //get data from the server
     $.getJSON(flightsUrl, function (data) {
-        //initialize the flights table (removing the old flights).
+        //initialize the flights table (removing the old flights) .
         let table = document.getElementById("intern_table");
         table.innerHTML = "";
         //adding the new flights to the intern_table, moving flight by flight with for-each loop .
