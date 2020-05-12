@@ -113,30 +113,45 @@ function DisplayFlights() {
         });
     });
 }
-
+let iconCopy = {
+    url: "../images/planeCopy.png", // url
+    scaledSize: new google.maps.Size(50, 50), // scaled size
+    origin: new google.maps.Point(0, 0), // origin
+    //        anchor: new google.maps.Point(0, 49) // anchor
+};
+//let markers = {};
 function showOnMap(flight) {
     let icon = {
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(50, 50), // scaled size
         origin: new google.maps.Point(0, 0), // origin
-//        anchor: new google.maps.Point(0, 49) // anchor
+        //        anchor: new google.maps.Point(0, 49) // anchor
     };
-
+    let posi = { lat: flight.latitude, lng: flight.longitude };
     let marker = new google.maps.Marker({
         // The below line is equivalent to writing:
         // position: new google.maps.LatLng(-34.397, 150.644)
         position: { lat: flight.latitude, lng: flight.longitude },
         map: map,
+        title: flight.flight_id,
         icon: icon
     });
+    //markers[posi] = flight.flight_id;
 
 
     let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
-        + '<p>Flight ID:' + flight.flight_id + '</p>'
+            + '<p>Flight ID:' + flight.flight_id + '</p>'
     });
 
-    google.maps.event.addListener(marker, 'click', function () {
-        infowindow.open(map, marker);
+    google.maps.event.addListener(marker, 'click', function (marker) {
+        //infowindow.open(map, marker);
+        let flightsUrl = "../api/FlightPlan/=" + marker.title;
+        $.getJSON(flightsUrl, function (data) {
+            data.forEach(function (flight) {
+                $("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.longitude + "</td>" + "<td>" + flight.latitude + "</td>" + "<td>" + flight.passengers + "</td>" + "<td>" + flight.company_name + "<td>" + flight.date_time + "</td>" + "<td>" + flight.is_external + "</td>" + "</td></tr>")
+                //showOnMap(flight);
+            });
+        });
     });
 }
