@@ -16,11 +16,11 @@ namespace FlightControl.Controllers
         private IFlightManager flightManager = new FlightManager();
         // GET: api/Flights/5
         [HttpGet]
-        public ActionResult<Flight> Get([FromQuery] string relative_To)
+        public ActionResult<Flights> Get([FromQuery] string relative_To)
         {
             string urlRequest = Request.QueryString.Value;
             string date = relative_To.Substring(1, 20);
-            IEnumerable<Flight> flightList = new List<Flight>();
+            IEnumerable<Flights> flightList = new List<Flights>();
             if (urlRequest.Contains("sync_all"))
             {
                 flightList = flightManager.GetFlightsByDateTimeAndSync(date);
@@ -45,7 +45,7 @@ namespace FlightControl.Controllers
 
         // POST: api/Flight
         [HttpPost]
-        public void Post([FromBody] Flight flight)
+        public void Post([FromBody] Flights flight)
         {
         }
 

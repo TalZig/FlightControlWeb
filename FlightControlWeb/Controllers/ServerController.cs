@@ -11,39 +11,40 @@ namespace FlightControl.Controllers
     [ApiController]
     public class ServerController : ControllerBase
     {
-        public static IServersManager servers = new ServersManager();
+        public static IServersManager serverManager = new ServersManager();
         // GET: api/Server
-        [HttpGet]
-        public IEnumerable<Server> Get()
+        [HttpGet(Name = "GetAllExternalServers")]
+        public ActionResult<IEnumerable<Server>> GetGetAllExternalServers()
         {
-            return servers.getServers();
+            IEnumerable<Server> ienumrableServer = serverManager.GetServers();
+            if (ienumrableServer == null)
+            {
+                return NotFound(ienumrableServer);
+            }
+            return Ok(ienumrableServer);
         }
-
-        // GET: api/Server/5
-        [HttpGet("{id}", Name = "GetS")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST: api/Server
         [HttpPost]
-        public void Post([FromBody] Server value)
+        public ActionResult Post([FromBody] Server server)
         {
-            servers.addServer(value);
-        }
-
-        // PUT: api/Server/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            string idOfAddedServer = serverManager.AddServer(server);
+            if (idOfAddedServer == null)
+            {
+                return BadRequest(idOfAddedServer);
+            }
+            return Ok(idOfAddedServer);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public ActionResult Delete(string id)
         {
-            servers.DeleteServer(id);
+            bool succeed = serverManager.DeleteServer(id);
+            if (!succeed)
+            {
+                return NotFound(succeed);
+            }
+            return Ok(succeed);
         }
     }
 }

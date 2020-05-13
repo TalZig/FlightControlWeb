@@ -45,7 +45,7 @@ namespace FlightControl.Controllers
 
         // PUT: api/FlightPlan/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Flight flight)
+        public void Put(int id, [FromBody] Flights flight)
         {
 
         }

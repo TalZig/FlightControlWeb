@@ -256,7 +256,7 @@ namespace FlightControl
         }
         // Function that set the latitude and longitude according where the flight is.
         private void SetCurrentCoordinates(DateTime dateTimeRequest, DateTime startFlight, List<Segment> segmentList,
-            Flight flight, InitialLocation initialLocation)
+            Flights flight, InitialLocation initialLocation)
         {
             DateTime dateTimeTemp = startFlight;
             double latitude;
@@ -288,7 +288,7 @@ namespace FlightControl
         // Function for calculating the update of longitude and latitude according of given leftTime
         // And segment. In this Function we will calculate the partOfSegment that the flight pass for
         // Help calculate longitude and latitude.
-        private void CalculateNewLongitudeLatitude(Flight flight, double givenLatitude, double givenLongitude,
+        private void CalculateNewLongitudeLatitude(Flights flight, double givenLatitude, double givenLongitude,
             double leftTime, Segment segment)
         {
             double latitude = segment.Latitude;
@@ -346,31 +346,31 @@ namespace FlightControl
         }
         // Function that returns flight with the updated values of latitude and longitude, and set the property
         // Is_external according to the given isExternal.
-        private Flight AddFlightWithDateTimeAndIsExternal(string id, DateTime dateTime, string isExternal)
+        private Flights AddFlightWithDateTimeAndIsExternal(string id, DateTime dateTime, string isExternal)
         {
             List<Segment> segmentList = GetSegmentList(id);
             InitialLocation initialLocation = GetInitialLocation(id);
             // Create flight with the given values.
-            Flight flight = CreateFlight(isExternal, id, initialLocation.Date_Time);
+            Flights flight = CreateFlight(isExternal, id, initialLocation.Date_Time);
             DateTime dateTimeOfIdFlight = ConvertToDateTime(initialLocation.Date_Time);
             // Set the current coordinates.
             SetCurrentCoordinates(dateTime, dateTimeOfIdFlight, segmentList, flight, initialLocation);
             return flight;
         }
         // Function that return only the internal flights according to the given dateTime.
-        public List<Flight> GetFlightsByDateTime(string stringDateTime)
+        public List<Flights> GetFlightsByDateTime(string stringDateTime)
         {
             // Get all internal flights.
-            List<Flight> internalFlightList = GetActivatedFlightsIsExternal(stringDateTime, "false");
+            List<Flights> internalFlightList = GetActivatedFlightsIsExternal(stringDateTime, "false");
             return internalFlightList;
         }
         // Function that returns the internal and external flights according to the given dateTime.
-        public List<Flight> GetFlightsByDateTimeAndSync(string stringDateTime)
+        public List<Flights> GetFlightsByDateTimeAndSync(string stringDateTime)
         {
             // Get the internal flights.
-            List<Flight> internalFlightList = GetFlightsByDateTime(stringDateTime);
+            List<Flights> internalFlightList = GetFlightsByDateTime(stringDateTime);
             // Get the external flights.
-            List<Flight> externalFlightList = GetFlightsFromServersTable(stringDateTime);
+            List<Flights> externalFlightList = GetFlightsFromServersTable(stringDateTime);
             // There are no external or internal flights that compatible to the givven dateTime.
             if (externalFlightList == null && internalFlightList == null) { return null; }
             // There are external and internal flights that compatible to the givven dateTime.
@@ -385,9 +385,9 @@ namespace FlightControl
             return internalFlightList;
         }
         // Function that return list of activated Flights according to given stringDateTime and external/internal.
-        private List<Flight> GetActivatedFlightsIsExternal(string stringDateTime, string isExternal)
+        private List<Flights> GetActivatedFlightsIsExternal(string stringDateTime, string isExternal)
         {
-            List<Flight> flightList = new List<Flight>();
+            List<Flights> flightList = new List<Flights>();
             DateTime dateTime = ConvertToDateTime(stringDateTime);
             // Get all flights according to given isExternal - internal/external.
             List<string> idList = GetIdListOfExternalOrInternal(isExternal);
@@ -403,7 +403,7 @@ namespace FlightControl
             return flightList;
         }
         // Function that creates Flight.
-        public Flight CreateFlight(string isExternal, string id, string dateTime)
+        public Flights CreateFlight(string isExternal, string id, string dateTime)
         {
             // Set variables according to the given id.
             object[] longitude = GetLineInformationFromSQLWithCommand("SELECT Longitude FROM InitialLocationSQL WHERE id=\"" + id + "\"");
@@ -411,7 +411,7 @@ namespace FlightControl
             object[] passengers = GetLineInformationFromSQLWithCommand("SELECT Passengers FROM FlightPlanSQL WHERE id=\"" + id + "\"");
             object[] companyName = GetLineInformationFromSQLWithCommand("SELECT Company_name FROM FlightPlanSQL WHERE id=\"" + id + "\"");
             // Set new Flight.
-            return new Flight
+            return new Flights
             {
                 Flight_id = id,
                 Longitude = Convert.ToDouble(longitude[0]),
@@ -508,10 +508,10 @@ namespace FlightControl
             catch (Exception) { }
         }
         // Function that returns all the flights from the external servers.
-        private List<Flight> GetFlightsFromServersTable(string stringDateTime)
+        private List<Flights> GetFlightsFromServersTable(string stringDateTime)
         {
             int i = 0;
-            List<Flight> flightsListFromAllExternalServers = new List<Flight>();
+            List<Flights> flightsListFromAllExternalServers = new List<Flights>();
             List<Server> serverIdList = GetExternalServers();
             // There are not external servers.
             if (serverIdList == null) { return null; }
@@ -519,7 +519,7 @@ namespace FlightControl
             {
                 // Set the url for getting the flight list.
                 string url = serverIdList[i].ServerURL + "/api/Flight?relative_to=<" + stringDateTime + ">";
-                List<Flight> flightsFromOtherServer = GetFlightsFromAnotherServer(url);
+                List<Flights> flightsFromOtherServer = GetFlightsFromAnotherServer(url);
                 if (flightsFromOtherServer == null) { continue; }
                 // If flightsFromOtherServer is not null, so merge between the lists.
                 flightsListFromAllExternalServers.AddRange(flightsFromOtherServer);
@@ -528,7 +528,7 @@ namespace FlightControl
         }
         // Function that returns all the flights from one external server, while asking from http
         // The information we want to get.
-        private List<Flight> GetFlightsFromAnotherServer(string externalUrlServer)
+        private List<Flights> GetFlightsFromAnotherServer(string externalUrlServer)
         {
             string url = String.Format(externalUrlServer);
             WebRequest requestObject = WebRequest.Create(url);
@@ -546,9 +546,9 @@ namespace FlightControl
             // If there is not information then return null.
             if (resultTest == null || resultTest == "") { return null; }
             // Otherwise, we need to deserialize the string we have.
-            List<Flight> externalFlightList = JsonConvert.DeserializeObject<List<Flight>>(resultTest);
+            List<Flights> externalFlightList = JsonConvert.DeserializeObject<List<Flights>>(resultTest);
             // Update Is_external to be "true".
-            foreach (Flight item in externalFlightList)
+            foreach (Flights item in externalFlightList)
             {
                 item.Is_external = "true";
             }

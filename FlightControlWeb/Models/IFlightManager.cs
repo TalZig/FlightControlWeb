@@ -8,8 +8,8 @@ namespace FlightControl.Models
 {
     public interface IFlightManager
     {
-        IEnumerable<Flight> GetFlightsByDateTime(string dateTime);
-        IEnumerable<Flight> GetFlightsByDateTimeAndSync(string dateTime);
+        IEnumerable<Flights> GetFlightsByDateTime(string dateTime);
+        IEnumerable<Flights> GetFlightsByDateTimeAndSync(string dateTime);
         bool DeleteFlightById(string id);
     }
 }

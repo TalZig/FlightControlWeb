@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace FlightControl.Models
 {
-    public class Flight
+    public class Flights
     {
         public string Flight_id
         {

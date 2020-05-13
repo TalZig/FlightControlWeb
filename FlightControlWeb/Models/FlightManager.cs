@@ -14,12 +14,12 @@ namespace FlightControl.Models
             return sqliteDataBase.DeleteFlightPlanFromTable(id);
         }
 
-        public IEnumerable<Flight> GetFlightsByDateTime(string dateTime)
+        public IEnumerable<Flights> GetFlightsByDateTime(string dateTime)
         {
             return sqliteDataBase.GetFlightsByDateTime(dateTime);
         }
 
-        public IEnumerable<Flight> GetFlightsByDateTimeAndSync(string dateTime)
+        public IEnumerable<Flights> GetFlightsByDateTimeAndSync(string dateTime)
         {
             return sqliteDataBase.GetFlightsByDateTimeAndSync(dateTime);
         }
