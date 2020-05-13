@@ -53,11 +53,7 @@ function populateTable(json) {
     console.log(json);
 }
 
-
-
-function DisplayFlights() {
-    let internTable = document.getElementById('intern_table');
-    //get the date and put in the pattern.
+function getDateTime() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
     dateTime = dateTime.concat("-");
@@ -83,7 +79,14 @@ function DisplayFlights() {
         dateTime = dateTime.concat("0");
     dateTime = dateTime.concat(d.getSeconds().toString());
     dateTime = dateTime.concat("Z");
-    console.log(dateTime);
+    return dateTime;
+}
+
+
+function DisplayFlights() {
+    let internTable = document.getElementById('intern_table');
+    //get the date and put in the pattern.
+    let dateTime = getDateTime();
     //edit the command
     let flightsUrl = "../api/Flight?relative_to=<" + dateTime + ">"
     //get data from the server
@@ -141,16 +144,11 @@ function showOnMap(flight) {
         let x = new XMLHttpRequest();
         x.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                let table = document.getElementById("tableFlights");
-                let row = table.insertRow(1);
-                let c0 = row.insertCell(0);
-                c0.innerHTML = flight.flight_id;
-                //$("#tableFlights").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight1.longitude + "</td>" + "<td>" + flight1.latitude + "</td>" + "<td>" + flight1.passengers + "</td>" + "<td>" + flight1.company_name + "<td>" + flight1.date_time + "</td>" + "<td>" + flight1.is_external + "</td>" + "</td></tr>")
+                $.ajax(generateTable(flight));
             }
         };
         x.open("GET", flightsUrl, true);
         x.setRequestHeader("content-type", "application/json");
-      
         x.send();
 
         /*$.ajax({
@@ -165,4 +163,33 @@ function showOnMap(flight) {
             }
         });*/
     });
+}
+
+function generateTable(flight) {
+    let table = document.getElementById("tableFlights");
+    //let id = table.rows[0].cells[0];
+    
+    if (table.rows.length > 1) {
+        let id = table.rows[1].cells[0]
+        if (id.innerHTML == flight.flight_id) {
+            table.deleteRow(1);
+            return;
+        }
+        table.deleteRow(1);
+    }
+    let row = table.insertRow(1);
+    let c0 = row.insertCell(0);
+    c0.innerHTML = flight.flight_id;
+    let c1 = row.insertCell(1);
+    c1.innerHTML = flight.longitude;
+    let c2 = row.insertCell(2);
+    c2.innerHTML = flight.latitude;
+    let c3 = row.insertCell(3);
+    c3.innerHTML = flight.passengers;
+    let c4 = row.insertCell(4);
+    c4.innerHTML = flight.company_name;
+    let c5 = row.insertCell(5);
+    c5.innerHTML = flight.date_time;
+    let c6 = row.insertCell(6);
+    c6.innerHTML = flight.is_external;
 }
