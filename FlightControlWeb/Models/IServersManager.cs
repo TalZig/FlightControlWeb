@@ -8,10 +8,8 @@ namespace FlightControl.Models
 {
     public interface IServersManager
     {
-        void DeleteServer(string id);
-
-        List<Server> getServers();
-
-        void addServer(Server s);
+        bool DeleteServer(string id);
+        IEnumerable<Server> GetServers();
+        string AddServer(Server s);
     }
 }

@@ -5,24 +5,20 @@ using System.Web;
 
 namespace FlightControl.Models
 {
-    public class ServersManager :IServersManager
+    public class ServersManager : IServersManager
     {
-        private static List<Server> Servers = new List<Server>();
-        public void DeleteServer(string id)
+        private static SqliteDataBase sqliteDataBase = new SqliteDataBase();
+        public bool DeleteServer(string id)
         {
-            Server Server1= Servers.Where(x => x.ServerId.Equals(id)).FirstOrDefault();
-            if (Server1 != null)
-            {
-                Servers.Remove(Server1);
-            }
+            return sqliteDataBase.DeleteServer(id);
         }
-        public List<Server> getServers()
+        public IEnumerable<Server> GetServers()
         {
-            return Servers;
+            return sqliteDataBase.GetExternalServers();
         }
-        public void addServer(Server s)
+        public string AddServer(Server server)
         {
-            Servers.Add(s);
+            return sqliteDataBase.AddServer(server);
         }
 
     }

@@ -3,10 +3,14 @@ using FlightControl.Models.FlightPlanObjects;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FlightControl
 {
@@ -65,9 +69,10 @@ namespace FlightControl
         // Add to FlightPlanSQL.
         private void AddToFlightPlanTable(FlightPlan flightPlan, string id)
         {
-            SqliteCommand addFlightPlanTableCommand = new SqliteCommand();
+            SqliteCommand addFlightPlanTableCommand = SetSqliteCommand("INSERT INTO FlightPlanSQL VALUES (@Id , @Passengers , @Company_name , @Is_external)");
+            /*SqliteCommand addFlightPlanTableCommand = new SqliteCommand();
             addFlightPlanTableCommand.Connection = myConnection;
-            addFlightPlanTableCommand.CommandText = "INSERT INTO FlightPlanSQL VALUES (@Id , @Passengers , @Company_name , @Is_external)";
+            addFlightPlanTableCommand.CommandText = "INSERT INTO FlightPlanSQL VALUES (@Id , @Passengers , @Company_name , @Is_external)";*/
             addFlightPlanTableCommand.Parameters.AddWithValue("@Id", id);
             addFlightPlanTableCommand.Parameters.AddWithValue("@Passengers", flightPlan.Passengers);
             addFlightPlanTableCommand.Parameters.AddWithValue("@Company_name", flightPlan.Company_name);
@@ -81,9 +86,10 @@ namespace FlightControl
         // Add to InitialLocationSQL.
         private void AddToInitialLocationTable(FlightPlan flightPlan, string id)
         {
-            SqliteCommand addInitialLocationTableCommand = new SqliteCommand();
+            SqliteCommand addInitialLocationTableCommand = SetSqliteCommand("INSERT INTO InitialLocationSQL VALUES (@Id , @Longitude , @Latitude , @Date_Time)");
+            /*SqliteCommand addInitialLocationTableCommand = new SqliteCommand();
             addInitialLocationTableCommand.Connection = myConnection;
-            addInitialLocationTableCommand.CommandText = "INSERT INTO InitialLocationSQL VALUES (@Id , @Longitude , @Latitude , @Date_Time)";
+            addInitialLocationTableCommand.CommandText = "INSERT INTO InitialLocationSQL VALUES (@Id , @Longitude , @Latitude , @Date_Time)";*/
             addInitialLocationTableCommand.Parameters.AddWithValue("@Id", id);
             addInitialLocationTableCommand.Parameters.AddWithValue("@Longitude", flightPlan.Location.Longitude);
             addInitialLocationTableCommand.Parameters.AddWithValue("@Latitude", flightPlan.Location.Latitude);
@@ -107,11 +113,12 @@ namespace FlightControl
         // Add a row of Segment to SegmentSQL.
         private void AddRowToSegmentTable(Segment segment, string id)
         {
-            SqliteCommand addSegmentTableCommand = new SqliteCommand
+            SqliteCommand addSegmentTableCommand = SetSqliteCommand("INSERT INTO SegmentSQL VALUES (@Id , @Longitude , @Latitude , @Timespan_Seconds)");
+            /*SqliteCommand addSegmentTableCommand = new SqliteCommand
             {
                 Connection = myConnection,
                 CommandText = "INSERT INTO SegmentSQL VALUES (@Id , @Longitude , @Latitude , @Timespan_Seconds)"
-            };
+            };*/
             addSegmentTableCommand.Parameters.AddWithValue("@Id", id);
             addSegmentTableCommand.Parameters.AddWithValue("@Longitude", segment.Longitude);
             addSegmentTableCommand.Parameters.AddWithValue("@Latitude", segment.Latitude);
@@ -219,20 +226,33 @@ namespace FlightControl
         // Function for delete flightPlan with the given id.
         public bool DeleteFlightPlanFromTable(string id)
         {
-            OpenConnection();
-            bool returnVal = true;
+            // Check if this id is exist in our SQL table.
+            object[] idFromFlightPlan = GetLineInformationFromSQLWithCommand("SELECT Id FROM FlightPlanSQL WHERE Id=\"" + id + "\"");
+            if (idFromFlightPlan == null) { return false; }
             // Set tables with the names of our tables.
             string[] tables = { "FlightPlanSQL", "InitialLocationSQL", "SegmentSQL" };
             int i = 0;
             for (; i < tables.Length; i++)
             {
-                SqliteCommand deleteCommand = new SqliteCommand();
-                deleteCommand.Connection = myConnection;
-                deleteCommand.CommandText = "DELETE FROM " + tables[i] + " WHERE Id=\"" + id + "\"";
+                DeleteLineFromTable("DELETE FROM " + tables[i] + " WHERE Id=\"" + id + "\"");
+            }
+            return true;
+        }
+        private void DeleteLineFromTable(string textCommand)
+        {
+            OpenConnection();
+            SqliteCommand deleteCommand = new SqliteCommand();
+            deleteCommand.Connection = myConnection;
+            deleteCommand.CommandText = textCommand;
+            try
+            {
                 deleteCommand.ExecuteReader();
             }
-            CloseConnection();
-            return returnVal;
+            catch (Exception) { }
+            finally
+            {
+                CloseConnection();
+            }
         }
         // Function that set the latitude and longitude according where the flight is.
         private void SetCurrentCoordinates(DateTime dateTimeRequest, DateTime startFlight, List<Segment> segmentList,
@@ -350,7 +370,7 @@ namespace FlightControl
             // Get the internal flights.
             List<Flight> internalFlightList = GetFlightsByDateTime(stringDateTime);
             // Get the external flights.
-            List<Flight> externalFlightList = GetActivatedFlightsIsExternal(stringDateTime, "true");
+            List<Flight> externalFlightList = GetFlightsFromServersTable(stringDateTime);
             // There are no external or internal flights that compatible to the givven dateTime.
             if (externalFlightList == null && internalFlightList == null) { return null; }
             // There are external and internal flights that compatible to the givven dateTime.
@@ -364,6 +384,7 @@ namespace FlightControl
             // There are only internal flights that compatible to the givven dateTime.
             return internalFlightList;
         }
+        // Function that return list of activated Flights according to given stringDateTime and external/internal.
         private List<Flight> GetActivatedFlightsIsExternal(string stringDateTime, string isExternal)
         {
             List<Flight> flightList = new List<Flight>();
@@ -381,13 +402,15 @@ namespace FlightControl
             }
             return flightList;
         }
-
+        // Function that creates Flight.
         public Flight CreateFlight(string isExternal, string id, string dateTime)
         {
+            // Set variables according to the given id.
             object[] longitude = GetLineInformationFromSQLWithCommand("SELECT Longitude FROM InitialLocationSQL WHERE id=\"" + id + "\"");
             object[] latitude = GetLineInformationFromSQLWithCommand("SELECT Latitude FROM InitialLocationSQL WHERE id=\"" + id + "\"");
             object[] passengers = GetLineInformationFromSQLWithCommand("SELECT Passengers FROM FlightPlanSQL WHERE id=\"" + id + "\"");
             object[] companyName = GetLineInformationFromSQLWithCommand("SELECT Company_name FROM FlightPlanSQL WHERE id=\"" + id + "\"");
+            // Set new Flight.
             return new Flight
             {
                 Flight_id = id,
@@ -462,6 +485,114 @@ namespace FlightControl
             // Check if flight finished before the dateTimeFromClient. If it is less then zero, so it is false.
             // Else, return true, because it did not finish yet.
             return !(DateTime.Compare(dateTimeOfFinishFlight, dateTimeFromClient) < 0);
+        }
+        // Function that add server to Servers.
+        public string AddServer(Server server)
+        {
+            string id = CreateRandomLetters(10);
+            OpenConnection();
+            AddToServersSQL(server, id);
+            CloseConnection();
+            return id;
+        }
+        // Function that responsible on the communication with Servers in order to add server to Servers.
+        private void AddToServersSQL(Server server, string id)
+        {
+            SqliteCommand addServersTableCommand = SetSqliteCommand("INSERT INTO Servers VALUES (@ServerId , @ServerURL)");
+            addServersTableCommand.Parameters.AddWithValue("@Id", id);
+            addServersTableCommand.Parameters.AddWithValue("@Longitude", server.ServerURL);
+            try
+            {
+                addServersTableCommand.ExecuteReader();
+            }
+            catch (Exception) { }
+        }
+        // Function that returns all the flights from the external servers.
+        private List<Flight> GetFlightsFromServersTable(string stringDateTime)
+        {
+            int i = 0;
+            List<Flight> flightsListFromAllExternalServers = new List<Flight>();
+            List<Server> serverIdList = GetExternalServers();
+            // There are not external servers.
+            if (serverIdList == null) { return null; }
+            for (; i < serverIdList.Count; ++i)
+            {
+                // Set the url for getting the flight list.
+                string url = serverIdList[i].ServerURL + "/api/Flight?relative_to=<" + stringDateTime + ">";
+                List<Flight> flightsFromOtherServer = GetFlightsFromAnotherServer(url);
+                if (flightsFromOtherServer == null) { continue; }
+                // If flightsFromOtherServer is not null, so merge between the lists.
+                flightsListFromAllExternalServers.AddRange(flightsFromOtherServer);
+            }
+            return flightsListFromAllExternalServers;
+        }
+        // Function that returns all the flights from one external server, while asking from http
+        // The information we want to get.
+        private List<Flight> GetFlightsFromAnotherServer(string externalUrlServer)
+        {
+            string url = String.Format(externalUrlServer);
+            WebRequest requestObject = WebRequest.Create(url);
+            requestObject.Method = "GET";
+            HttpWebResponse responseObject = null;
+            responseObject = (HttpWebResponse)requestObject.GetResponse();
+            string resultTest = null;
+            // Get the data from the url.
+            using (Stream stream = responseObject.GetResponseStream())
+            {
+                StreamReader streamReader = new StreamReader(stream);
+                resultTest = streamReader.ReadToEnd();
+                streamReader.Close();
+            }
+            // If there is not information then return null.
+            if (resultTest == null || resultTest == "") { return null; }
+            // Otherwise, we need to deserialize the string we have.
+            List<Flight> externalFlightList = JsonConvert.DeserializeObject<List<Flight>>(resultTest);
+            // Update Is_external to be "true".
+            foreach (Flight item in externalFlightList)
+            {
+                item.Is_external = "true";
+            }
+            return externalFlightList;
+        }
+        // Function that return all external servers.
+        public List<Server> GetExternalServers()
+        {
+            List<object[]> serverObjectList = GetListOfInformationFromSQLWithCommand("SELECT * FROM Servers");
+            if (serverObjectList == null) { return null; }
+            List<Server> serverList = new List<Server>();
+            int i = 0;
+            for (; i < serverObjectList.Count; ++i)
+            {
+                serverList.Add(new Server
+                {
+                    ServerId = serverObjectList[i][0].ToString(),
+                    ServerURL = serverObjectList[i][1].ToString()
+                });
+            }
+            return serverList;
+        }
+
+        /*public List<Flight> GetAllFlights()
+        {
+            List<object[]> idFlightObjectList = GetListOfInformationFromSQLWithCommand("SELECT Id From FlightPlanSQL");
+            if (idFlightObjectList == null) { return null; }
+            List<Flight> flightList = new List<Flight>();
+            int i = 0;
+            for (; i < idFlightObjectList.Count; ++i)
+            {
+                string id = idFlightObjectList[i][0].ToString();
+                InitialLocation initialLocation = GetInitialLocation(id);
+                flightList.Add(CreateFlight("false", id, initialLocation.Date_Time));
+            }
+            return flightList;
+        }*/
+        // Function that delete server with this specific id.
+        public bool DeleteServer(string id)
+        {
+            object[] idServer = GetLineInformationFromSQLWithCommand("SELECT ServerId FROM Servers WHERE ServerId=\"" + id + "\"");
+            if (idServer == null) { return false; }
+            DeleteLineFromTable("DELETE FROM Servers WHERE ServerId=\"" + id + "\"");
+            return true;
         }
         // Function that takes a string that represents the dateTime and turns it to varaible in typeOf DateTime.
         private DateTime ConvertToDateTime(string stringDateTime)
