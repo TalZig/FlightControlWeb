@@ -11,6 +11,7 @@ namespace FlightControl.Models
         public string Flight_id
         {
             get;
+
             set;
 
         }
