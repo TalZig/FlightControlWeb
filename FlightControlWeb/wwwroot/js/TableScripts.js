@@ -116,7 +116,7 @@ let iconCopy = {
     url: "../images/planeCopy.png", // url
     scaledSize: new google.maps.Size(50, 50), // scaled size
     origin: new google.maps.Point(0, 0), // origin
-};
+}
 //let markers = {};
 function showOnMap(flight) {
     let icon = {
@@ -140,17 +140,16 @@ function showOnMap(flight) {
     });
 
     google.maps.event.addListener(marker, 'click', function (marker) {
-        let flightsUrl = "../api/FlightPlan/45oIhiuQJf";
+        let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
         let x = new XMLHttpRequest();
         x.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                $.ajax(activate(flight));
+                let flightPlan = JSON.parse(x.responseText);
+                $.ajax(activate(flight, marker, flightPlan));
             }
         };
         x.open("GET", flightsUrl, true);
-        x.setRequestHeader("content-type", "application/json");
         x.send();
-
         /*$.ajax({
             url: flightsUrl,
             dataType: "jsonP",
@@ -167,8 +166,6 @@ function showOnMap(flight) {
 
 function generateTable(flight) {
     let table = document.getElementById("tableFlights");
-    //let id = table.rows[0].cells[0];
-    
     if (table.rows.length > 1) {
         let id = table.rows[1].cells[0]
         if (id.innerHTML == flight.flight_id) {
@@ -193,7 +190,30 @@ function generateTable(flight) {
     let c6 = row.insertCell(6);
     c6.innerHTML = flight.is_external;
 }
-
-function activate(flight) {
+let selected = null;
+function activate(flight, marker, flightPlan) {
+    /*if (selected !== null) {
+        reset(selected);
+        if (selected.flight_id === flight.flight_id)
+            return;
+    }*/
     generateTable(flight);
+    //highlightOnTable(flight);
+    changeMarker(marker);
+    //showPath(flightPlan);
+}
+
+function changeMarker(marker) {
+    marker.setIcon(iconCopy);
+    //marker.srcElement = "../images/planeCopy.png";
+}
+
+function highlightOnTable(flight) {
+    let table = document.getElementById("intern_table");
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        if (row.cells[0].innerHTML === flight.flight_id) {
+            row.addClass("table-success");
+            break;
+        }
+    }
 }
