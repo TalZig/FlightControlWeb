@@ -1,3 +1,5 @@
+let selected = null;
+
 function initializeTable() {
     let internTable = document.getElementById('intern_table');
     let d = new Date();
@@ -107,7 +109,7 @@ function DisplayFlights() {
         c2.innerHTML = "Passengers";
         c2.style.fontWeight = 'bold'
         data.forEach(function (flight) {
-            $("#intern_table").append("<tr ><td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+            $("#intern_table").append("<tr style=\"background-color: white\" > <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
             showOnMap(flight);
         });
     });
@@ -166,14 +168,6 @@ function showOnMap(flight) {
 
 function generateTable(flight) {
     let table = document.getElementById("tableFlights");
-    if (table.rows.length > 1) {
-        let id = table.rows[1].cells[0]
-        if (id.innerHTML == flight.flight_id) {
-            table.deleteRow(1);
-            return;
-        }
-        table.deleteRow(1);
-    }
     let row = table.insertRow(1);
     let c0 = row.insertCell(0);
     c0.innerHTML = flight.flight_id;
@@ -190,16 +184,19 @@ function generateTable(flight) {
     let c6 = row.insertCell(6);
     c6.innerHTML = flight.is_external;
 }
-let selected = null;
+
 function activate(flight, marker, flightPlan) {
-    /*if (selected !== null) {
+    if (selected !== null) {
         reset(selected);
-        if (selected.flight_id === flight.flight_id)
+        if (selected.flight_id === flight.flight_id) {
+            selected = null;
             return;
-    }*/
+        }
+    }
+    selected = flight;
     generateTable(flight);
-    //highlightOnTable(flight);
-    changeMarker(marker);
+    highlightOnTable(flight);
+    //changeMarker(marker);
     //showPath(flightPlan);
 }
 
@@ -208,12 +205,34 @@ function changeMarker(marker) {
     //marker.srcElement = "../images/planeCopy.png";
 }
 
+
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");
     for (var i = 0, row; row = table.rows[i]; i++) {
         if (row.cells[0].innerHTML === flight.flight_id) {
-            row.addClass("table-success");
+            row.style.backgroundColor = "magenta";
             break;
         }
     }
+}
+
+function reset(selected) {
+    resetDetailsTable();
+    resetFlightsTable(selected);
+}
+
+function resetFlightsTable(selected) {
+    let table = document.getElementById("intern_table");
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        if (row.cells[0].innerHTML === selected.flight_id) {
+            row.style.backgroundColor = "white";
+            break;
+        }
+    }
+}
+
+function resetDetailsTable() {
+    let table = document.getElementById("tableFlights");
+    if (table.rows.length > 1)
+        table.deleteRow(1);
 }
