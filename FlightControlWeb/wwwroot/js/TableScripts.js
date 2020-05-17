@@ -1,5 +1,5 @@
 let selected = null;
-
+let markers = [];
 function initializeTable() {
     let internTable = document.getElementById('intern_table');
     let d = new Date();
@@ -108,6 +108,11 @@ setInterval(
             let c2 = row.insertCell(2);
             c2.innerHTML = "Passengers";
             c2.style.fontWeight = 'bold'
+            let i;
+            for (i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
             data.forEach(function (flight) {
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     $("#intern_table").append("<tr style=\"background-color: magenta\" > <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
@@ -123,7 +128,6 @@ let iconCopy = {
     scaledSize: new google.maps.Size(50, 50), // scaled size
     origin: new google.maps.Point(0, 0), // origin
 }
-let markers = new Array();
 function showOnMap(flight) {
     let icon = {
         url: "../images/plane.png", // url
@@ -137,13 +141,13 @@ function showOnMap(flight) {
         title: flight.flight_id,
         icon: icon
     });
-    //markers[flight.id] = marker;
+    markers.push(marker);
 
 
-    let infowindow = new google.maps.InfoWindow({
+/*    let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
             + '<p>Flight ID:' + flight.flight_id + '</p>'
-    });
+    });*/
 
     google.maps.event.addListener(marker, 'click', function (marker) {
         let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
