@@ -230,6 +230,7 @@ function highlightOnTable(flight) {
 function reset(selected) {
     resetDetailsTable();
     resetFlightsTable(selected);
+    removePath();
 }
 
 function resetFlightsTable(selected) {
@@ -245,11 +246,11 @@ function showPath(flightPlan) {
     flightPlanCoordinates = [];
     let path = flightPath.getPath();
     path = [];
-    path.push(new google.maps.LatLng(flightPlan.initial_location.longitude, flightPlan.initial_location.latitude));
+    path.push(new google.maps.LatLng(flightPlan.initial_location.latitude, flightPlan.initial_location.longitude));
     flightPath.setPath(path);
     let i;
     for (i = 0; i < flightPlan.segments.length; i++) {
-        path.push(new google.maps.LatLng(flightPlan.segments[i].longitude, flightPlan.segments[i].latitude));
+        path.push(new google.maps.LatLng(flightPlan.segments[i].latitude, flightPlan.segments[i].longitude));
         flightPath.setPath(path);
     }
 }
@@ -258,4 +259,9 @@ function resetDetailsTable() {
     let table = document.getElementById("tableFlights");
     if (table.rows.length > 1)
         table.deleteRow(1);
+}
+function removePath() {
+    let path = flightPath.getPath();
+    path = [];
+    flightPath.setPath(path);
 }
