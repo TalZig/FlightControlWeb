@@ -147,6 +147,16 @@ function showOnMap(flight) {
         x.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 let flightPlan = JSON.parse(x.responseText);
+/*                flightPlanCoordinates = [];
+                let path = flightPath.getPath();
+                path = [];
+                path.push(new google.maps.LatLng(flightPlan.initial_location.longitude, flightPlan.initial_location.latitude));
+                flightPath.setPath(path);
+                let i;
+                for (i = 0; i < flightPlan.segments.length; i++) {
+                    path.push(new google.maps.LatLng(flightPlan.segments[i].longitude, flightPlan.segments[i].latitude));
+                    flightPath.setPath(path);
+                }*/
                 $.ajax(activate(flight, marker, flightPlan));
             }
         };
@@ -194,6 +204,7 @@ function activate(flight, marker, flightPlan) {
         }
     }
     selected = flight;
+    showPath(flightPlan);
     generateTable(flight);
     highlightOnTable(flight);
     //changeMarker(marker);
@@ -228,6 +239,18 @@ function resetFlightsTable(selected) {
             row.style.backgroundColor = "white";
             break;
         }
+    }
+}
+function showPath(flightPlan) {
+    flightPlanCoordinates = [];
+    let path = flightPath.getPath();
+    path = [];
+    path.push(new google.maps.LatLng(flightPlan.initial_location.longitude, flightPlan.initial_location.latitude));
+    flightPath.setPath(path);
+    let i;
+    for (i = 0; i < flightPlan.segments.length; i++) {
+        path.push(new google.maps.LatLng(flightPlan.segments[i].longitude, flightPlan.segments[i].latitude));
+        flightPath.setPath(path);
     }
 }
 
