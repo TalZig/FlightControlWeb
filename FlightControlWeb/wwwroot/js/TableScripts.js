@@ -144,7 +144,7 @@ function showOnMap(flight) {
         let x = new XMLHttpRequest();
         x.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                $.ajax(generateTable(flight));
+                $.ajax(activate(flight));
             }
         };
         x.open("GET", flightsUrl, true);
@@ -192,4 +192,8 @@ function generateTable(flight) {
     c5.innerHTML = flight.date_time;
     let c6 = row.insertCell(6);
     c6.innerHTML = flight.is_external;
+}
+
+function activate(flight) {
+    generateTable(flight);
 }
