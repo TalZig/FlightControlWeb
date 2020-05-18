@@ -1,4 +1,5 @@
 let selected = null;
+let tempMarker = null;
 
 function initializeTable() {
     let internTable = document.getElementById('intern_table');
@@ -207,21 +208,30 @@ function activate(flight, marker, flightPlan) {
     showPath(flightPlan);
     generateTable(flight);
     highlightOnTable(flight);
-    //changeMarker(marker);
-    //showPath(flightPlan);
+    changeMarker(marker);
 }
 
 function changeMarker(marker) {
-    marker.setIcon(iconCopy);
-    //marker.srcElement = "../images/planeCopy.png";
+    //marker.icon = iconcopy;
+    /*let newIcon = {
+        url: "../images/plane.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    };
+    marker = new google.maps.Marker({
+        position: { lat: marker.LatLng.lat, lng: marker.LatLng.lng },
+        map: map,
+        title: flight.flight_id,
+        icon: newIcon
+    });*/
+    tempMarker = marker;
 }
-
 
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");
     for (var i = 0, row; row = table.rows[i]; i++) {
         if (row.cells[0].innerHTML === flight.flight_id) {
-            row.style.backgroundColor = "magenta";
+            row.style.backgroundColor = "aquamarine";
             break;
         }
     }
