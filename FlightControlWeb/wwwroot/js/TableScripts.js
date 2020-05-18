@@ -1,6 +1,5 @@
 let selected = null;
-let tempMarker = null;
-
+let markers = [];
 function initializeTable() {
     let internTable = document.getElementById('intern_table');
     let d = new Date();
@@ -86,41 +85,49 @@ function getDateTime() {
 }
 
 
-function DisplayFlights() {
-    let internTable = document.getElementById('intern_table');
-    //get the date and put in the pattern.
-    let dateTime = getDateTime();
-    //edit the command
-    let flightsUrl = "../api/Flight?relative_to=<" + dateTime + ">"
-    //get data from the server
-    $.getJSON(flightsUrl, function (data) {
-        //initialize the flights table (removing the old flights) .
-        let table = document.getElementById("intern_table");
-        table.innerHTML = "";
-        //adding the new flights to the intern_table, moving flight by flight with for-each loop .
-        let header = table.createTHead();
-        let row = header.insertRow();
-        let c0 = row.insertCell(0);
-        c0.innerHTML = "Flight.ID";
-        c0.style.fontWeight = 'bold'
-        let c1 = row.insertCell(1);
-        c1.innerHTML = "Company";
-        c1.style.fontWeight = 'bold'
-        let c2 = row.insertCell(2);
-        c2.innerHTML = "Passengers";
-        c2.style.fontWeight = 'bold'
-        data.forEach(function (flight) {
-            $("#intern_table").append("<tr style=\"background-color: white\" > <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
-            showOnMap(flight);
+setInterval(
+    function DisplayFlights() {
+        //get the date and put in the pattern.
+        let dateTime = getDateTime();
+        //edit the command
+        let flightsUrl = "../api/Flight?relative_to=<" + dateTime + ">"
+        //get data from the server
+        $.getJSON(flightsUrl, function (data) {
+            //initialize the flights table (removing the old flights) .
+            let table = document.getElementById("intern_table");
+            table.innerHTML = "";
+            //adding the new flights to the intern_table, moving flight by flight with for-each loop .
+            let header = table.createTHead();
+            let row = header.insertRow();
+            let c0 = row.insertCell(0);
+            c0.innerHTML = "Flight.ID";
+            c0.style.fontWeight = 'bold'
+            let c1 = row.insertCell(1);
+            c1.innerHTML = "Company";
+            c1.style.fontWeight = 'bold'
+            let c2 = row.insertCell(2);
+            c2.innerHTML = "Passengers";
+            c2.style.fontWeight = 'bold'
+            let i;
+            for (i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+            data.forEach(function (flight) {
+                if (selected != null && flight.flight_id == selected.flight_id) {
+                    $("#intern_table").append("<tr style=\"background-color: magenta\" > <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                } else
+                    $("#intern_table").append("<tr style=\"background-color: white\" > <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                showOnMap(flight);
+            });
         });
-    });
-}
+    }, 3000);
+
 let iconCopy = {
     url: "../images/planeCopy.png", // url
     scaledSize: new google.maps.Size(50, 50), // scaled size
     origin: new google.maps.Point(0, 0), // origin
 }
-//let markers = {};
 function showOnMap(flight) {
     let icon = {
         url: "../images/plane.png", // url
@@ -134,13 +141,13 @@ function showOnMap(flight) {
         title: flight.flight_id,
         icon: icon
     });
-    //markers[posi] = flight.flight_id;
+    markers.push(marker);
 
 
-    let infowindow = new google.maps.InfoWindow({
+/*    let infowindow = new google.maps.InfoWindow({
         content: '<p>Marker Location:' + marker.getPosition() + '</p>'
             + '<p>Flight ID:' + flight.flight_id + '</p>'
-    });
+    });*/
 
     google.maps.event.addListener(marker, 'click', function (marker) {
         let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
@@ -257,6 +264,7 @@ function showPath(flightPlan) {
     let path = flightPath.getPath();
     path = [];
     path.push(new google.maps.LatLng(flightPlan.initial_location.latitude, flightPlan.initial_location.longitude));
+
     flightPath.setPath(path);
     let i;
     for (i = 0; i < flightPlan.segments.length; i++) {
