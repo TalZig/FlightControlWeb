@@ -156,6 +156,10 @@ namespace FlightControl
                 return SetFlightPlanByListObjects(lineFlightPlanSQL, id);
             }
             List<Server> listOfExternalServers = GetExternalServers();
+            if (listOfExternalServers == null)
+            {
+                return null;
+            }
             int i = 0;
             for (; i < listOfExternalServers.Count; ++i)
             {
