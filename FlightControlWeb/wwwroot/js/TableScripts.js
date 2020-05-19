@@ -128,7 +128,8 @@ function rowClick(i) {
 function helper(flight) {
     let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
     let x = new XMLHttpRequest();
-    let marker = findMarker(flight.flight_id);
+    let id = flight.flight_id
+    let marker = findMarker(id);
     x.onreadystatechange = function (marker) {
         if (this.readyState == 4 && this.status == 200) {
             let flightPlan = JSON.parse(x.responseText);
@@ -142,7 +143,7 @@ function helper(flight) {
 function findMarker(id) {
     let i;
     for (i = 0; i < markers.length; i++) {
-        if (markers[i].title == id /*&& markers[i].getPosition().lng() === flight.longitude*/)
+        if (markers[i].title == id)
             return markers[i];
     }
 }
@@ -150,7 +151,7 @@ function findFlight(id) {
     let i;
     for (i = 0; i < flights.length; i++) {
         if (flights[i].flight_id == id)
-            return markers[i];
+            return flights[i];
     }
 }
 
@@ -206,7 +207,7 @@ function addEventListnerToRows() {
                 flightId = cells[0].innerHTML;
                 let flight = findFlight(flightId);
                 //helper(flight);
-                $.ajax(helper(flight));
+                helper(flight);
                 //alert(index);
             });
         }(index));
