@@ -1,6 +1,6 @@
 let selected = null;
 let markers = [];
-
+let flights = [] ;
 function getDateTime() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
@@ -59,7 +59,9 @@ setInterval(
                 markers[i].setMap(null);
             }
             markers = [];
+            flights = [];
             data.forEach(function (flight) {
+                flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
                     $("#intern_table").on("click", rowClick(flight))
@@ -70,8 +72,12 @@ setInterval(
                 }
                 showOnMap(flight);
             });
+            addEventListnerToRows()
+            /*for (var i = 0, row; row = table.rows[i]; i++) {
+                row.onclick = rowClick(i);
+            }*/
         });
-    }, 2000);
+    }, 4000);
 
 let iconCopy = {
     url: "../images/planeCopy.png", // url
@@ -110,7 +116,7 @@ function showOnMap(flight) {
 function rowClick(flight) {
     let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
     let x = new XMLHttpRequest();
-    let marker = findMarker(flight);
+    let marker = findMarker(flight.flight_id);
     x.onreadystatechange = function (marker) {
         if (this.readyState == 4 && this.status == 200) {
             let flightPlan = JSON.parse(x.responseText);
@@ -121,10 +127,17 @@ function rowClick(flight) {
     x.send();
 }
 
-function findMarker(flight) {
+function findMarker(id) {
     let i;
     for (i = 0; i < markers.length; i++) {
-        if (markers[i].LatLng.lat === flight.latitude && markers[i].LatLng.lng === flight.longitude)
+        if (markers[i].title == id /*&& markers[i].getPosition().lng() === flight.longitude*/)
+            return markers[i];
+    }
+}
+function findFlight(id) {
+    let i;
+    for (i = 0; i < flights.length; i++) {
+        if (flights[i].flight_id == id)
             return markers[i];
     }
 }
@@ -162,7 +175,31 @@ function activate(flight, marker, flightPlan) {
     highlightOnTable(flight);
     //changeMarker(marker);
 }
-
+function addEventListnerToRows() {
+    var table = document.getElementById("intern_table");
+    var trList = table.getElementsByTagName("tr");
+    for (var index = 0; index < trList.length; index++) {
+        (function (index) {
+            trList[index].addEventListener("click", function (event) {
+                var target = event.target || event.srcElement; //for IE8 backward compatibility
+                while (target && target.nodeName != 'TR') {
+                    target = target.parentElement;
+                }
+                var cells = target.cells; //cells collection
+                //var cells = target.getElementsByTagName('td'); //alternative
+                if (!cells.length || target.parentNode.nodeName == 'THEAD') { // if clicked row is within thead
+                    return;
+                }
+                let flightId;
+                flightId = cells[0].innerHTML;
+                let flight = findFlight(flightId);
+                //helper(flight);
+                $.ajax(helper(flight));
+                //alert(index);
+            });
+        }(index));
+    }
+}
 function changeMarker(marker) {}
 
 function highlightOnTable(flight) {
