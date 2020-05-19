@@ -1,6 +1,6 @@
 let selected = null;
 let markers = [];
-let flights = [] ;
+let flights = [];
 function getDateTime() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
@@ -64,12 +64,8 @@ setInterval(
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
-                    $("#intern_table").on("click", rowClick(flight))
-                } else {
-                    $("#intern_table").append(("<tr style=\"background-color: white\" onclick> <td>"
-                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td></tr>").on("click", rowClick(flight)))
-                }
+                } else
+                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
                 showOnMap(flight);
             });
             addEventListnerToRows()
@@ -113,10 +109,27 @@ function showOnMap(flight) {
     });
 }
 
-function rowClick(flight) {
+function rowClick(i) {
+    let table = document.getElementById("intern_table");
+    let id = table.rows[i].cells[0].innerHTML;
+    let xhr = new XMLHttpRequest();
+    let url = "../api/Flight/" + id;
+    activate(flight, marker, flightPlan);
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let flight = JSON.parse(x.responseText);
+            $.ajax(helper(flight));
+        }
+    };
+    xhr.open("GET", url, true);
+    xhr.send();
+}
+
+function helper(flight) {
     let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
     let x = new XMLHttpRequest();
-    let marker = findMarker(flight.flight_id);
+    let id = flight.flight_id
+    let marker = findMarker(id);
     x.onreadystatechange = function (marker) {
         if (this.readyState == 4 && this.status == 200) {
             let flightPlan = JSON.parse(x.responseText);
@@ -130,7 +143,7 @@ function rowClick(flight) {
 function findMarker(id) {
     let i;
     for (i = 0; i < markers.length; i++) {
-        if (markers[i].title == id /*&& markers[i].getPosition().lng() === flight.longitude*/)
+        if (markers[i].title == id)
             return markers[i];
     }
 }
@@ -138,7 +151,7 @@ function findFlight(id) {
     let i;
     for (i = 0; i < flights.length; i++) {
         if (flights[i].flight_id == id)
-            return markers[i];
+            return flights[i];
     }
 }
 
@@ -194,13 +207,13 @@ function addEventListnerToRows() {
                 flightId = cells[0].innerHTML;
                 let flight = findFlight(flightId);
                 //helper(flight);
-                $.ajax(helper(flight));
+                helper(flight);
                 //alert(index);
             });
         }(index));
     }
 }
-function changeMarker(marker) {}
+function changeMarker(marker) { }
 
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");
