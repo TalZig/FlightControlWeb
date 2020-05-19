@@ -62,13 +62,14 @@ setInterval(
             data.forEach(function (flight) {
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
-                } else
-                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                    $("#intern_table").on("click", rowClick(flight))
+                } else {
+                    $("#intern_table").append(("<tr style=\"background-color: white\" onclick> <td>"
+                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                        + flight.passengers + "</td></tr>").on("click", rowClick(flight)))
+                }
                 showOnMap(flight);
             });
-            /*for (var i = 0, row; row = table.rows[i]; i++) {
-                row.onclick = rowClick(i);
-            }*/
         });
     }, 2000);
 
@@ -106,23 +107,7 @@ function showOnMap(flight) {
     });
 }
 
-function rowClick(i) {
-    let table = document.getElementById("intern_table");
-    let id = table.rows[i].cells[0].innerHTML;
-    let xhr = new XMLHttpRequest();
-    let url = "../api/Flight/" + id;
-    activate(flight, marker, flightPlan);
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let flight = JSON.parse(x.responseText);
-            $.ajax(helper(flight));
-        }
-    };
-    xhr.open("GET", url, true);
-    xhr.send();
-}
-
-function helper(flight) {
+function rowClick(flight) {
     let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
     let x = new XMLHttpRequest();
     let marker = findMarker(flight);
