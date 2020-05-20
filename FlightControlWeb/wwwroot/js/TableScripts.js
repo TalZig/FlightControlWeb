@@ -63,7 +63,7 @@ setInterval(
             data.forEach(function (flight) {
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td>"+"..images/Trash1.png"+"</td></tr>")
                 } else
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
                 showOnMap(flight);
@@ -186,7 +186,7 @@ function activate(flight, marker, flightPlan) {
     showPath(flightPlan);
     generateTable(flight);
     highlightOnTable(flight);
-    //changeMarker(marker);
+    changeMarker(marker);
 }
 function addEventListnerToRows() {
     var table = document.getElementById("intern_table");
@@ -213,7 +213,11 @@ function addEventListnerToRows() {
         }(index));
     }
 }
-function changeMarker(marker) {}
+let markersImage = new google.maps.MarkerImage('../images/planeCopy.png', new google.maps.Size(30, 30), new google.maps.Point(0, 0),
+    new google.maps.Point(15, 15));
+function changeMarker(marker) {
+    marker.setIcon(markersImage);
+}
 
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");
