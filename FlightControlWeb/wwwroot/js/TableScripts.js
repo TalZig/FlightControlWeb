@@ -320,7 +320,6 @@ function showPath(flightPlan) {
     let path = flightPath.getPath();
     path = [];
     path.push(new google.maps.LatLng(flightPlan.initial_location.latitude, flightPlan.initial_location.longitude));
-
     flightPath.setPath(path);
     let i;
     for (i = 0; i < flightPlan.segments.length; i++) {
