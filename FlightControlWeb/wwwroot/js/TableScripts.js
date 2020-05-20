@@ -77,13 +77,13 @@ setInterval(
 
 function showOnMap(flight) {
     let icon2 = {
-        url: "../images/pin.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
+        url: "../images/Travel.png", // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
             origin: new google.maps.Point(0, 0), // origin
     }
     let icon = {
         url: "../images/plane.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
+        scaledSize: new google.maps.Size(35, 35), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     };
     let posi = { lat: flight.latitude, lng: flight.longitude };
@@ -257,8 +257,8 @@ function changeMarker(marker, flight) {
     });
     delete marker;*/
     markers[x].setIcon({
-        url: "../images/pin.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
+        url: "../images/Travel.png", // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     });
 }
@@ -296,7 +296,7 @@ function resetIcon(flight) {
     delete marker;*/
     markers[x].setIcon({
         url: "../images/plane.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
+        scaledSize: new google.maps.Size(35, 35), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     });
 }
