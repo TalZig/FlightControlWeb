@@ -63,6 +63,7 @@ setInterval(
             }
             markers = [];
             flights = [];
+            let counter = 0;
             data.forEach(function (flight) {
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
@@ -78,6 +79,7 @@ setInterval(
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
+                counter++;
             });
             addEventListnerToRows()
             if (selected !== null) {
@@ -90,12 +92,12 @@ setInterval(
         });
     }, 4000);
 
-function btnclick(el) {
-    /*$(el).closest('tr').remove();
-    let i = 0;*/
-    let row = $(el).closest('tr');
-    let id = row.cells[0].innerHTML;
-    if (selected.id === id) {
+function btnclick(numOfRow) {
+    let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
+    let id = rowCells[0].innerHTML;
+    //let row = $(el).closest('tr');
+    //let id = row.cells.innerHTML;
+    if (selected != null && selected.flight_id === id) {
         reset(selected);
         selected = null;
     }
