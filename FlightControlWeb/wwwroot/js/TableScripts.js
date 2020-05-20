@@ -69,12 +69,12 @@ setInterval(
                     selected = flight;
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onclick=btnclick(this)>"
-                        + "< img src =\"../images/Trash1.png\"></button></td></tr>")
+                        + flight.passengers + "</td><td><button onclick=event.stopPropagation() onclick=btnclick(this)>"
+                        + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 } else {
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onclick=btnclick(this)>"
+                        + flight.passengers + "</td><td><button onclick=event.stopPropagation() onclick=btnclick(this)>"
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
@@ -228,12 +228,12 @@ function addEventListnerToRows() {
                 if (!cells.length || target.parentNode.nodeName == 'THEAD') { // if clicked row is within thead
                     return;
                 }
-                let flightId;
-                flightId = cells[0].innerHTML;
-                let flight = findFlight(flightId);
-                //helper(flight);
-                helper(flight);
-                //alert(index);
+                    let flightId;
+                    flightId = cells[0].innerHTML;
+                    let flight = findFlight(flightId);
+                    //helper(flight);
+                    helper(flight);
+                    //alert(index);
             });
         }(index));
     }
