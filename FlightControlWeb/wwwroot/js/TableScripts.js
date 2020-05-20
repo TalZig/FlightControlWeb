@@ -63,15 +63,21 @@ setInterval(
             data.forEach(function (flight) {
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td>"+"..images/Trash1.png"+"</td></tr>")
-                } else
+                    selected = flight;
+                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td>" + "..images/Trash1.png" + "</td></tr>")
+                } else {
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                }
                 showOnMap(flight);
             });
             addEventListnerToRows()
-            /*for (var i = 0, row; row = table.rows[i]; i++) {
-                row.onclick = rowClick(i);
-            }*/
+            if (selected !== null) {
+                let table = document.getElementById("tableFlights");
+                if (table.rows.length > 1)
+                    table.deleteRow(1)
+                generateTable(selected);
+            }
+                
         });
     }, 4000);
 
@@ -86,7 +92,6 @@ function showOnMap(flight) {
         scaledSize: new google.maps.Size(35, 35), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     };
-    let posi = { lat: flight.latitude, lng: flight.longitude };
     let marker;
     if (selected != null && selected.flight_id == flight.flight_id) {
         marker = new google.maps.Marker({
@@ -195,8 +200,8 @@ function activate(flight, marker, flightPlan) {
     }
     selected = flight;
     showPath(flightPlan);
-    generateTable(flight);
     highlightOnTable(flight);
+    generateTable(flight);
     changeMarker(marker, flight);
 }
 function addEventListnerToRows() {
@@ -231,31 +236,6 @@ function changeMarker(marker, flight) {
         if (markers[i].title == flight.flight_id)
             x = i;
     }
-    /*let iconCopy = {
-        url: "../images/planeCopy.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
-        origin: new google.maps.Point(0, 0), // origin
-    }
-    let pos = marker.latLng;
-    let newMarker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        title: flight.flight_id,
-        icon: iconCopy
-    });
-    google.maps.event.addListener(newMarker, 'click', function (marker) {
-        let flightsUrl = "../api/FlightPlan/" + marker.title;
-        let x = new XMLHttpRequest();
-        x.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                let flightPlan = JSON.parse(x.responseText);
-                $.ajax(activate(flight, newMarker, flightPlan));
-            }
-        };
-        x.open("GET", flightsUrl, true);
-        x.send();
-    });
-    delete marker;*/
     markers[x].setIcon({
         url: "../images/Travel.png", // url
         scaledSize: new google.maps.Size(40, 40), // scaled size
@@ -269,31 +249,6 @@ function resetIcon(flight) {
         if (markers[i].title == flight.flight_id)
             x = i;
     }
-    /*let iconCopy = {
-        url: "../images/planeCopy.png", // url
-        scaledSize: new google.maps.Size(50, 50), // scaled size
-        origin: new google.maps.Point(0, 0), // origin
-    }
-    let pos = marker.latLng;
-    let newMarker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        title: flight.flight_id,
-        icon: iconCopy
-    });
-    google.maps.event.addListener(newMarker, 'click', function (marker) {
-        let flightsUrl = "../api/FlightPlan/" + marker.title;
-        let x = new XMLHttpRequest();
-        x.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                let flightPlan = JSON.parse(x.responseText);
-                $.ajax(activate(flight, newMarker, flightPlan));
-            }
-        };
-        x.open("GET", flightsUrl, true);
-        x.send();
-    });
-    delete marker;*/
     markers[x].setIcon({
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(35, 35), // scaled size
