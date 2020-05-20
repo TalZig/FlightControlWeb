@@ -76,18 +76,34 @@ setInterval(
     }, 4000);
 
 function showOnMap(flight) {
+    let icon2 = {
+        url: "../images/pin.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+    }
     let icon = {
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(50, 50), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     };
     let posi = { lat: flight.latitude, lng: flight.longitude };
-    let marker = new google.maps.Marker({
-        position: { lat: flight.latitude, lng: flight.longitude },
-        map: map,
-        title: flight.flight_id,
-        icon: icon
-    });
+    let marker;
+    if (selected != null && selected.flight_id == flight.flight_id) {
+        marker = new google.maps.Marker({
+            position: { lat: flight.latitude, lng: flight.longitude },
+            map: map,
+            title: flight.flight_id,
+            icon: icon2
+        });
+    }
+    else {
+        marker = new google.maps.Marker({
+            position: { lat: flight.latitude, lng: flight.longitude },
+            map: map,
+            title: flight.flight_id,
+            icon: icon
+        });
+    }
     markers.push(marker);
 
     google.maps.event.addListener(marker, 'click', function (marker) {
@@ -246,6 +262,44 @@ function changeMarker(marker, flight) {
         origin: new google.maps.Point(0, 0), // origin
     });
 }
+function resetIcon(flight) {
+    let i;
+    let x;
+    for (i = 0; i < markers.length; i++) {
+        if (markers[i].title == flight.flight_id)
+            x = i;
+    }
+    /*let iconCopy = {
+        url: "../images/planeCopy.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    }
+    let pos = marker.latLng;
+    let newMarker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: flight.flight_id,
+        icon: iconCopy
+    });
+    google.maps.event.addListener(newMarker, 'click', function (marker) {
+        let flightsUrl = "../api/FlightPlan/" + marker.title;
+        let x = new XMLHttpRequest();
+        x.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let flightPlan = JSON.parse(x.responseText);
+                $.ajax(activate(flight, newMarker, flightPlan));
+            }
+        };
+        x.open("GET", flightsUrl, true);
+        x.send();
+    });
+    delete marker;*/
+    markers[x].setIcon({
+        url: "../images/plane.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    });
+}
 
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");
@@ -258,6 +312,7 @@ function highlightOnTable(flight) {
 }
 
 function reset(selected) {
+    resetIcon(selected);
     resetDetailsTable();
     resetFlightsTable(selected);
     removePath();
