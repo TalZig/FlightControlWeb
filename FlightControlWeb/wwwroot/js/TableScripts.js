@@ -90,7 +90,7 @@ setInterval(
             }
                 
         });
-    }, 4000);
+    }, 1500);
 
 function btnclick(numOfRow) {
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
