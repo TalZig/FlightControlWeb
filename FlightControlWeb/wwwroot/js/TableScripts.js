@@ -99,8 +99,14 @@ function btnclick(el) {
     }
     let url = "../api/Flight/" + id;
     let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            $(el).closest('tr').remove();
+        }
+    };
     xhr.open("DELETE", url, true);
     xhr.send();
+
 }
 
 function showOnMap(flight) {
