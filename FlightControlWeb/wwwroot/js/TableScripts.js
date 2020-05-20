@@ -90,28 +90,20 @@ setInterval(
             }
 
         });
-    }, 1500);
+    }, 1000);
 
 function btnclick(numOfRow) {
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
     let id = rowCells[0].innerHTML;
-
-    //let row = $(el).closest('tr');
-    //let id = row.cells.innerHTML;
     if (selected != null && selected.flight_id === id) {
         reset(selected);
         selected = null;
     }
+    document.getElementById("intern_table").deleteRow(numOfRow + 1);
     let url = "../api/Flight/" + id;
     let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            $(el).closest('tr').remove();
-        }
-    };
     xhr.open("DELETE", url, true);
     xhr.send();
-
 }
 
 function showOnMap(flight) {
@@ -315,7 +307,6 @@ function resetFlightsTable(selected) {
         }
     }
 }
-
 function showPath(flightPlan) {
     flightPlanCoordinates = [];
     let path = flightPath.getPath();
