@@ -95,6 +95,7 @@ setInterval(
 function btnclick(numOfRow) {
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
     let id = rowCells[0].innerHTML;
+
     //let row = $(el).closest('tr');
     //let id = row.cells.innerHTML;
     if (selected != null && selected.flight_id === id) {
