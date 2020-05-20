@@ -88,7 +88,7 @@ setInterval(
                     table.deleteRow(1)
                 generateTable(selected);
             }
-                
+
         });
     }, 1500);
 
@@ -118,7 +118,7 @@ function showOnMap(flight) {
     let icon2 = {
         url: "../images/Travel.png", // url
         scaledSize: new google.maps.Size(40, 40), // scaled size
-            origin: new google.maps.Point(0, 0), // origin
+        origin: new google.maps.Point(0, 0), // origin
     }
     let icon = {
         url: "../images/plane.png", // url
@@ -252,12 +252,12 @@ function addEventListnerToRows() {
                 if (!cells.length || target.parentNode.nodeName == 'THEAD') { // if clicked row is within thead
                     return;
                 }
-                    let flightId;
-                    flightId = cells[0].innerHTML;
-                    let flight = findFlight(flightId);
-                    //helper(flight);
-                    helper(flight);
-                    //alert(index);
+                let flightId;
+                flightId = cells[0].innerHTML;
+                let flight = findFlight(flightId);
+                //helper(flight);
+                helper(flight);
+                //alert(index);
             });
         }(index));
     }
@@ -315,6 +315,7 @@ function resetFlightsTable(selected) {
         }
     }
 }
+
 function showPath(flightPlan) {
     flightPlanCoordinates = [];
     let path = flightPath.getPath();
