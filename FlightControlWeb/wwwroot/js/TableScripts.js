@@ -74,8 +74,7 @@ setInterval(
                 } else {
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onclick=btnclick(this)>"
-                        + "<img src=\"../images/Trash1.png\"></button></td></tr>")
+                        + flight.passengers + "</td><td><button onclick=btnclick(this)><img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
             });
@@ -89,6 +88,19 @@ setInterval(
                 
         });
     }, 4000);
+
+function btnclick(el) {
+    let row = $(el).closest('tr');
+    let id = row.cells[0].innerHTML;
+    if (selected.id === id) {
+        reset(selected);
+        selected = null;
+    }
+    let url = "../api/Flight/" + id;
+    let xhr = new XMLHttpRequest();
+    xhr.open("DELETE", url, true);
+    xhr.send();
+}
 
 function showOnMap(flight) {
     let icon2 = {
