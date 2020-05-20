@@ -75,11 +75,6 @@ setInterval(
         });
     }, 4000);
 
-let iconCopy = {
-    url: "../images/planeCopy.png", // url
-    scaledSize: new google.maps.Size(50, 50), // scaled size
-    origin: new google.maps.Point(0, 0), // origin
-}
 function showOnMap(flight) {
     let icon = {
         url: "../images/plane.png", // url
@@ -186,7 +181,7 @@ function activate(flight, marker, flightPlan) {
     showPath(flightPlan);
     generateTable(flight);
     highlightOnTable(flight);
-    //changeMarker(marker);
+    changeMarker(marker, flight);
 }
 function addEventListnerToRows() {
     var table = document.getElementById("intern_table");
@@ -213,7 +208,39 @@ function addEventListnerToRows() {
         }(index));
     }
 }
-function changeMarker(marker) { }
+function changeMarker(marker, flight) {
+    let i;
+    let x;
+    for (i = 0; i < markers.length; i++) {
+        if (markers[i].title == flight.flight_id)
+            x = i;
+    }
+    let iconCopy = {
+        url: "../images/planeCopy.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    }
+    let pos = marker.latLng;
+    let newMarker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: flight.flight_id,
+        icon: iconCopy
+    });
+    google.maps.event.addListener(newMarker, 'click', function (marker) {
+        let flightsUrl = "../api/FlightPlan/" + marker.title;
+        let x = new XMLHttpRequest();
+        x.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let flightPlan = JSON.parse(x.responseText);
+                $.ajax(activate(flight, newMarker, flightPlan));
+            }
+        };
+        x.open("GET", flightsUrl, true);
+        x.send();
+    });
+    markers.splice(x, 1, newMarker);
+}
 
 function highlightOnTable(flight) {
     let table = document.getElementById("intern_table");

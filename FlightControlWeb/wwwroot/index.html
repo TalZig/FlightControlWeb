@@ -110,15 +110,6 @@
         }
     </script>
     <script src="../../Scripts/jquery-3.5.0.js"></script>
-    <script>
-        let flightsUrl = "../api/Flight";
-        $.getJSON(flightsUrl, function (data) {
-            data.forEach(function (flight) {
-                $("#tableFlights").append("<tr ><td>" + flight.Flight_id + "</td>" + "<td>" + flight.Company_name + "</td></tr>")
-            });
-            console.log(data);
-        });
-    </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP0eL2Fhp2xkJBLf9VhITAPgZt8Svl0_0&callback=initMap">
     </script>
