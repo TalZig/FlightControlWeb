@@ -63,7 +63,7 @@ setInterval(
             data.forEach(function (flight) {
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td>"+"..images/Trash1.png"+"</td></tr>")
                 } else
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
                 showOnMap(flight);
