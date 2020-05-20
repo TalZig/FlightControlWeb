@@ -63,21 +63,23 @@ setInterval(
             }
             markers = [];
             flights = [];
+            let counter = 0;
             data.forEach(function (flight) {
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     selected = flight;
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onmousedown=btnclick(intern_table) onclick=event.stopPropagation() onclick=btnclick(this)>"
+                        + flight.passengers + "</td><td><button onmousedown=btnclick("+ counter + ") onclick=event.stopPropagation() onclick=btnclick(this)>"
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 } else {
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onmousedown=btnclick(intern_table) onclick=event.stopPropagation() >"
+                        + flight.passengers + "</td><td><button onmousedown=btnclick(" + counter + ") onclick=event.stopPropagation() >"
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
+                counter++;
             });
             addEventListnerToRows()
             if (selected !== null) {
@@ -90,10 +92,12 @@ setInterval(
         });
     }, 4000);
 
-function btnclick(el) {
-    let row = $(el).closest('tr');
-    let id = row.cells[0].innerHTML;
-    if (selected.id === id) {
+function btnclick(numOfRow) {
+    let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
+    let id = rowCells[0].innerHTML;
+    //let row = $(el).closest('tr');
+    //let id = row.cells.innerHTML;
+    if (selected != null && selected.flight_id === id) {
         reset(selected);
         selected = null;
     }
