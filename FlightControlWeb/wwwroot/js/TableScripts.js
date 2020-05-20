@@ -215,7 +215,7 @@ function changeMarker(marker, flight) {
         if (markers[i].title == flight.flight_id)
             x = i;
     }
-    let iconCopy = {
+    /*let iconCopy = {
         url: "../images/planeCopy.png", // url
         scaledSize: new google.maps.Size(50, 50), // scaled size
         origin: new google.maps.Point(0, 0), // origin
@@ -239,7 +239,12 @@ function changeMarker(marker, flight) {
         x.open("GET", flightsUrl, true);
         x.send();
     });
-    markers.splice(x, 1, newMarker);
+    delete marker;*/
+    markers[x].setIcon({
+        url: "../images/pin.png", // url
+        scaledSize: new google.maps.Size(50, 50), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    });
 }
 
 function highlightOnTable(flight) {
