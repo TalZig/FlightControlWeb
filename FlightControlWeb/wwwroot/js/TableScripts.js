@@ -69,12 +69,12 @@ setInterval(
                     selected = flight;
                     $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onclick=event.stopPropagation() onclick=btnclick(this)>"
+                        + flight.passengers + "</td><td><button onmousedown=btnclick(intern_table) onclick=event.stopPropagation() onclick=btnclick(this)>"
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 } else {
                     $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
                         + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onclick=event.stopPropagation() onclick=btnclick(this)>"
+                        + flight.passengers + "</td><td><button onmousedown=btnclick(intern_table) onclick=event.stopPropagation() >"
                         + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
