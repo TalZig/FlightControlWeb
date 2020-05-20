@@ -54,6 +54,9 @@ setInterval(
             let c2 = row.insertCell(2);
             c2.innerHTML = "Passengers";
             c2.style.fontWeight = 'bold'
+            let c3 = row.insertCell(3);
+            c3.innerHTML = "Delete";
+            c3.style.fontWeight = 'bold'
             let i;
             for (i = 0; i < markers.length; i++) {
                 markers[i].setMap(null);
@@ -64,9 +67,15 @@ setInterval(
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     selected = flight;
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td><button onclick=btnclick(this)>Delete</button></td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
+                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                        + flight.passengers + "</td><td><button onclick=btnclick(this)>"
+                        + "< img src =\"../images/Trash1.png\"></button></td></tr>")
                 } else {
-                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td><button onclick=btnclick(this)>Delete</button></td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
+                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                        + flight.passengers + "</td><td><button onclick=btnclick(this)>"
+                        + "<img src=\"../images/Trash1.png\"></button></td></tr>")
                 }
                 showOnMap(flight);
             });
