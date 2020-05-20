@@ -64,9 +64,9 @@ setInterval(
                 flights.push(flight);
                 if (selected != null && flight.flight_id == selected.flight_id) {
                     selected = flight;
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td>" + "trash" + "</td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td><button onclick=btnclick(this)>Delete</button></td></tr>")
                 } else {
-                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td></tr>")
+                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>" + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>" + flight.passengers + "</td><td><button onclick=btnclick(this)>Delete</button></td></tr>")
                 }
                 showOnMap(flight);
             });
