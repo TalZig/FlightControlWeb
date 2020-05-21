@@ -11,7 +11,7 @@ namespace FlightControl.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FlightController : ControllerBase
+    public class FlightsController : ControllerBase
     {
         private IFlightManager flightManager = new FlightManager();
         // GET: api/Flights/5

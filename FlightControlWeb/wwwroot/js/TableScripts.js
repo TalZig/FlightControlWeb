@@ -36,7 +36,7 @@ setInterval(
         //get the date and put in the pattern.
         let dateTime = getDateTime();
         //edit the command
-        let flightsUrl = "../api/Flight?relative_to=<" + dateTime + ">"
+        let flightsUrl = "../api/Flights?relative_to=<" + dateTime + ">"
         //get data from the server
         $.getJSON(flightsUrl, function (data) {
             //initialize the flights table (removing the old flights) .
@@ -100,7 +100,7 @@ function btnclick(numOfRow) {
         selected = null;
     }
     document.getElementById("intern_table").deleteRow(numOfRow + 1);
-    let url = "../api/Flight/" + id;
+    let url = "../api/Flights/" + id;
     let xhr = new XMLHttpRequest();
     xhr.open("DELETE", url, true);
     xhr.send();
@@ -154,7 +154,7 @@ function rowClick(i) {
     let table = document.getElementById("intern_table");
     let id = table.rows[i].cells[0].innerHTML;
     let xhr = new XMLHttpRequest();
-    let url = "../api/Flight/" + id;
+    let url = "../api/Flights/" + id;
     activate(flight, marker, flightPlan);
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
