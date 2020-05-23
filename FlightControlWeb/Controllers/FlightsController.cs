@@ -13,21 +13,32 @@ namespace FlightControl.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-        private IFlightManager flightManager = new FlightManager();
+        private IFlightManager flightManager;
+        public FlightsController(IFlightManager iFlightManager)
+        {
+            flightManager = iFlightManager;
+        }
         // GET: api/Flights/5
         [HttpGet]
-        public ActionResult<Flights> Get([FromQuery] string relative_To)
+        public async Task<ActionResult<Flights>> Get([FromQuery] string relative_To)
         {
             string urlRequest = Request.QueryString.Value;
-            string date = relative_To.Substring(1, 20);
             IEnumerable<Flights> flightList = new List<Flights>();
-            if (urlRequest.Contains("sync_all"))
+            // The pattern we asked for.
+            string patternAndSync = @"^?relative_to=(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z+(&sync_all)$";
+            string patternWithoutSync = @"^?relative_to=(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z$";
+            if (Regex.IsMatch(urlRequest, patternAndSync))
             {
-                flightList = flightManager.GetFlightsByDateTimeAndSync(date);
+                flightList = await flightManager.GetFlightsByDateTimeAndSync(relative_To);
+
+            }
+            else if (Regex.IsMatch(urlRequest, patternWithoutSync))
+            {
+                flightList = flightManager.GetFlightsByDateTime(relative_To);
             }
             else
             {
-                flightList = flightManager.GetFlightsByDateTime(date);
+                return BadRequest();
             }
             if (flightList == null) { return NotFound(flightList); }
             return Ok(flightList);
@@ -41,18 +52,6 @@ namespace FlightControl.Controllers
                 return Ok();
             }
             return BadRequest();
-        }
-
-        // POST: api/Flight
-        [HttpPost]
-        public void Post([FromBody] Flights flight)
-        {
-        }
-
-        // PUT: api/Flight/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
         }
     }
 }

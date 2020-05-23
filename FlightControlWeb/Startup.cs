@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlightControl.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,10 @@ namespace FlightControl
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<IFlightManager, FlightManager>();
+            services.AddSingleton<IFlightPlanManager, FlightPlanManager>();
+            services.AddSingleton<IServersManager, ServersManager>();
+            services.AddSingleton<SqliteDataBase, SqliteDataBase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +49,6 @@ namespace FlightControl
             {
                 endpoints.MapControllers();
             });
-            SqliteDataBase.InitializeSqliteDataBase();
         }
     }
 }

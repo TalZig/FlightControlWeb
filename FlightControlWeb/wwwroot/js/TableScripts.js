@@ -32,13 +32,17 @@ function getDateTime() {
 
 
 setInterval(
-    function DisplayFlights() {
+    async function DisplayFlights() {
         //get the date and put in the pattern.
         let dateTime = getDateTime();
         //edit the command
-        let flightsUrl = "../api/Flights?relative_to=<" + dateTime + ">"
+        let flightsUrl = "../api/Flights?relative_to=" + dateTime
         //get data from the server
-        $.getJSON(flightsUrl, function (data) {
+        //
+        //$.getJSON(flightsUrl, function (data) 
+        let response = await fetch(flightsUrl)
+        response.status
+        let data = await response.json() 
             //initialize the flights table (removing the old flights) .
             let table = document.getElementById("intern_table");
             table.innerHTML = "";
@@ -89,10 +93,11 @@ setInterval(
                 generateTable(selected);
             }
 
-        });
+        //});
     }, 1000);
 
 function btnclick(numOfRow) {
+    alert(numOfRow);
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
     let id = rowCells[0].innerHTML;
     if (selected != null && selected.flight_id === id) {
@@ -137,7 +142,7 @@ function showOnMap(flight) {
     markers.push(marker);
 
     google.maps.event.addListener(marker, 'click', function (marker) {
-        let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
+        let flightsUrl = "../api/FlightPlan/" + flight.flight_id + "&sync_all";
         let x = new XMLHttpRequest();
         x.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -167,7 +172,7 @@ function rowClick(i) {
 }
 
 function helper(flight) {
-    let flightsUrl = "../api/FlightPlan/" + flight.flight_id;
+    let flightsUrl = "../api/FlightPlan/" + flight.flight_id + "&sync_all";
     let x = new XMLHttpRequest();
     let id = flight.flight_id
     let marker = findMarker(id);

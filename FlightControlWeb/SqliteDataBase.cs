@@ -11,24 +11,23 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace FlightControl
 {
     public class SqliteDataBase
     {
         private static SqliteConnection myConnection;
-        public SqliteDataBase() { }
-        // The Startup.cs is calling to this function that responsible for SQL tables creation (if they dont exist).
-        public static void InitializeSqliteDataBase()
+        private static Mutex mutex;
+        public SqliteDataBase() 
         {
+            mutex = new Mutex();
             SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder();
             // The path of our sqlite that we want to create.
             connectionStringBuilder.DataSource = AppDomain.CurrentDomain.BaseDirectory + @"\Database.sqlite";
             SqliteDataBase.myConnection = new SqliteConnection(connectionStringBuilder.ConnectionString);
-            if (SqliteDataBase.myConnection.State != System.Data.ConnectionState.Open)
-            {
-                SqliteDataBase.myConnection.Open();
-            }
+            mutex.WaitOne();
+            SqliteDataBase.myConnection.Open();
             // Create FlightPlanSQL table.
             CreateNewSQLTable("CREATE TABLE IF NOT EXISTS FlightPlanSQL (Id TEXT PRIMARY KEY NOT NULL, Passengers INTEGER DEFAULT 0, Company_name TEXT NOT NULL, Is_external TEXT NOT NULL)");
             // Create InitialLocationSQL table.
@@ -38,6 +37,7 @@ namespace FlightControl
             // Create Servers table.
             CreateNewSQLTable("CREATE TABLE IF NOT EXISTS ServersSQL(ServerId TEXT PRIMARY KEY, ServerURL TEXT NOT NULL)");
             myConnection.Close();
+            mutex.ReleaseMutex();
         }
         // Create new SQL table using a text that contains the comaptible creation command.
         private static void CreateNewSQLTable(string commandOfCreatingSQLTable)
@@ -90,7 +90,7 @@ namespace FlightControl
         private string CreateRandomLetters(int length)
         {
             Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
         // Add to FlightPlanSQL.
@@ -103,7 +103,9 @@ namespace FlightControl
             addFlightPlanTableCommand.Parameters.AddWithValue("@Is_external", "false");
             try
             {
+                /*OpenConnection();*/
                 addFlightPlanTableCommand.ExecuteReader();
+                /*CloseConnection();*/
             }
             catch (Exception) { }
         }
@@ -117,7 +119,9 @@ namespace FlightControl
             addInitialLocationTableCommand.Parameters.AddWithValue("@Date_Time", flightPlan.Location.Date_Time);
             try
             {
+                /*OpenConnection();*/
                 addInitialLocationTableCommand.ExecuteReader();
+                /*CloseConnection();*/
             }
             catch (Exception) { }
         }
@@ -141,7 +145,9 @@ namespace FlightControl
             addSegmentTableCommand.Parameters.AddWithValue("@Timespan_Seconds", segment.Timespan_Seconds);
             try
             {
+                /*OpenConnection();*/
                 addSegmentTableCommand.ExecuteReader();
+                /*CloseConnection();*/
             }
             catch (Exception) { }
         }
@@ -155,6 +161,13 @@ namespace FlightControl
             {
                 return SetFlightPlanByListObjects(lineFlightPlanSQL, id);
             }
+            return null;
+        }
+        // Function that returns FlightPlan according to the given id in our database and in the other servers.
+        public async Task<FlightPlan> GetFlightPlanByIdAndSync(string id)
+        {
+            FlightPlan flightPlan = GetFlightPlanById(id);
+            if (flightPlan != null) { return flightPlan; }
             List<Server> listOfExternalServers = GetExternalServers();
             if (listOfExternalServers == null)
             {
@@ -167,7 +180,7 @@ namespace FlightControl
                 if (idFlightFromExternalServer == null) { continue; }
                 string url = GetUrlWithoutSlashInTheEnd(listOfExternalServers[i].ServerURL);
                 url += "api/FlightPlan/" + id;
-                FlightPlan flightPlanFromExternalServer = GetGenericFromAnotherServer<FlightPlan>(url);
+                FlightPlan flightPlanFromExternalServer = await GetGenericFromAnotherServer<FlightPlan>(url);
                 if (idFlightFromExternalServer != null) { return flightPlanFromExternalServer; }
             }
             return null;
@@ -396,12 +409,12 @@ namespace FlightControl
             return internalFlightList;
         }
         // Function that returns the internal and external flights according to the given dateTime.
-        public List<Flights> GetFlightsByDateTimeAndSync(string stringDateTime)
+        public async Task<List<Flights>> GetFlightsByDateTimeAndSync(string stringDateTime)
         {
             // Get the internal flights.
             List<Flights> internalFlightList = GetFlightsByDateTime(stringDateTime);
             // Get the external flights.
-            List<Flights> externalFlightList = GetFlightsFromServersTable(stringDateTime);
+            List<Flights> externalFlightList = await GetFlightsFromServersTable(stringDateTime);
             // There are no external or internal flights that compatible to the givven dateTime.
             if (externalFlightList == null && internalFlightList == null) { return null; }
             // There are external and internal flights that compatible to the givven dateTime.
@@ -539,7 +552,7 @@ namespace FlightControl
             catch (Exception) { }
         }
         // Function that returns all the flights from the external servers.
-        private List<Flights> GetFlightsFromServersTable(string stringDateTime)
+        private async Task<List<Flights>> GetFlightsFromServersTable(string stringDateTime)
         {
             int i = 0;
             List<Flights> flightsListFromAllExternalServers = new List<Flights>();
@@ -550,8 +563,8 @@ namespace FlightControl
             {
                 // Set the url for getting the flight list.
                 string url = GetUrlWithoutSlashInTheEnd(serverIdList[i].ServerURL);
-                url += "/api/Flight?relative_to=<" + stringDateTime + ">";
-                List<Flights> flightsFromOtherServer = GetGenericFromAnotherServer<List<Flights>>(url);
+                url += "/api/Flight?relative_to=" + stringDateTime;
+                List<Flights> flightsFromOtherServer = await GetGenericFromAnotherServer<List<Flights>>(url);
                 CreateOrDeleteSQLFlightFromOtherServer(flightsFromOtherServer, serverIdList[i].ServerId);
                 flightsFromOtherServer = ChangeToExternal(flightsFromOtherServer);
                 // If flightsFromOtherServer is not null, so merge between the lists.
@@ -595,13 +608,13 @@ namespace FlightControl
         }
         // Generic function that returns list of information from one external server, while asking from http
         // The information we want to get.
-        private T GetGenericFromAnotherServer<T>(string externalUrlServer)
+        private async Task<T> GetGenericFromAnotherServer<T>(string externalUrlServer)
         {
             string url = String.Format(externalUrlServer);
             WebRequest requestObject = WebRequest.Create(url);
             requestObject.Method = "GET";
             HttpWebResponse responseObject = null;
-            responseObject = (HttpWebResponse)requestObject.GetResponse();
+            responseObject = (HttpWebResponse)await requestObject.GetResponseAsync();
             string resultTest = null;
             // Get the data from the url.
             using (Stream stream = responseObject.GetResponseStream())
@@ -675,18 +688,14 @@ namespace FlightControl
         // Function for openning the connection, if the connection is not already open.
         public void OpenConnection()
         {
-            if (myConnection.State != System.Data.ConnectionState.Open)
-            {
-                myConnection.Open();
-            }
+            mutex.WaitOne();
+            myConnection.Open();
         }
         // Function for closing the connection, if the connection is not already close.
         public void CloseConnection()
         {
-            if (myConnection.State != System.Data.ConnectionState.Closed)
-            {
-                myConnection.Close();
-            }
+            myConnection.Close();
+            mutex.ReleaseMutex();
         }
     }
 }

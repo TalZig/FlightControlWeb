@@ -11,7 +11,11 @@ namespace FlightControl.Controllers
     [ApiController]
     public class ServerController : ControllerBase
     {
-        public static IServersManager serverManager = new ServersManager();
+        public static IServersManager serverManager;
+        public ServerController(IServersManager iServerManager)
+        {
+            serverManager = iServerManager;
+        }
         // GET: api/Server
         [HttpGet(Name = "GetAllExternalServers")]
         public ActionResult<IEnumerable<Server>> GetGetAllExternalServers()

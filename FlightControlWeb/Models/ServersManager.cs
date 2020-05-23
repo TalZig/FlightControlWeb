@@ -7,7 +7,11 @@ namespace FlightControl.Models
 {
     public class ServersManager : IServersManager
     {
-        private static SqliteDataBase sqliteDataBase = new SqliteDataBase();
+        private static SqliteDataBase sqliteDataBase;
+        public ServersManager(SqliteDataBase sqliteData)
+        {
+            sqliteDataBase = sqliteData;
+        }
         public bool DeleteServer(string id)
         {
             return sqliteDataBase.DeleteServer(id);

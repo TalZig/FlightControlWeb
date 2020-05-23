@@ -7,12 +7,17 @@ using Newtonsoft.Json;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FlightControl.Models
 {
     public class FlightPlanManager : IFlightPlanManager
     {
-        private static SqliteDataBase sqliteDataBase = new SqliteDataBase();
+        private static SqliteDataBase sqliteDataBase;
+        public FlightPlanManager(SqliteDataBase sqliteData)
+        {
+            sqliteDataBase = sqliteData;
+        }
         public string AddFlightPlan(FlightPlan flightPlan)
         {
             return sqliteDataBase.AddFlightPlan(flightPlan);
@@ -28,5 +33,9 @@ namespace FlightControl.Models
             return sqliteDataBase.DeleteFlightPlanFromTable(id);
         }
 
+        public async Task<FlightPlan> GetFlightPlanByIdAndSync(string id)
+        {
+            return await sqliteDataBase.GetFlightPlanByIdAndSync(id);
+        }
     }
 }
