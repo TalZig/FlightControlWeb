@@ -159,7 +159,7 @@ function rowClick(i) {
     let table = document.getElementById("intern_table");
     let id = table.rows[i].cells[0].innerHTML;
     let xhr = new XMLHttpRequest();
-    let url = "../api/Flights/" + id;
+    let url = "../api/Flights/" + id + "&sync_all";
     activate(flight, marker, flightPlan);
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
