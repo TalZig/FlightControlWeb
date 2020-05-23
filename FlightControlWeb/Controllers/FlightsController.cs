@@ -47,11 +47,18 @@ namespace FlightControl.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
-            if (flightManager.DeleteFlightById(id))
+            string urlRequest = Request.Path;
+            string correctPattern = @"^/api/Flights/[a-zA-Z]{2}[0-9]{5}[a-zA-Z]{3}$";
+            if (!Regex.IsMatch(urlRequest, correctPattern))
+            {
+                return BadRequest();
+            }
+            bool succeed = flightManager.DeleteFlightById(id);
+            if (succeed)
             {
                 return Ok();
             }
-            return BadRequest();
+            return NotFound();
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FlightControl.Models;
+using System.Text.RegularExpressions;
+
 namespace FlightControl.Controllers
 {
     [Route("api/[controller]")]
@@ -39,10 +41,16 @@ namespace FlightControl.Controllers
             return Ok(idOfAddedServer);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Server/5
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
+            string urlRequest = Request.Path;
+            string correctPattern = @"^/api/Server/[a-zA-Z]{2}[0-9]{5}[a-zA-Z]{3}$";
+            if (!Regex.IsMatch(urlRequest, correctPattern))
+            {
+                return BadRequest();
+            }
             bool succeed = serverManager.DeleteServer(id);
             if (!succeed)
             {
