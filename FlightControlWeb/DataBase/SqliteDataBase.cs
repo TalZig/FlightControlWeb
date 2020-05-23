@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using FlightControlWeb;
 
 namespace FlightControl
 {
-    public class SqliteDataBase
+    public class SqliteDataBase : IDataBase
     {
         private static SqliteConnection myConnection;
         private static Mutex mutex;

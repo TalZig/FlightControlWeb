@@ -8,13 +8,14 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using FlightControlWeb;
 
 namespace FlightControl.Models
 {
     public class FlightPlanManager : IFlightPlanManager
     {
-        private static SqliteDataBase sqliteDataBase;
-        public FlightPlanManager(SqliteDataBase sqliteData)
+        private static IDataBase sqliteDataBase;
+        public FlightPlanManager(IDataBase sqliteData)
         {
             sqliteDataBase = sqliteData;
         }

@@ -5,12 +5,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using FlightControl.Controllers;
+using FlightControlWeb;
+
 namespace FlightControl.Models
 {
     public class FlightManager : IFlightManager
     {
-        private SqliteDataBase sqliteDataBase/* = new SqliteDataBase()*/;
-        public FlightManager(SqliteDataBase sqliteData)
+        private IDataBase sqliteDataBase;
+        public FlightManager(IDataBase sqliteData)
         {
             sqliteDataBase = sqliteData;
         }

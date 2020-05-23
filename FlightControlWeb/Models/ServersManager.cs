@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlightControlWeb;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,8 +8,8 @@ namespace FlightControl.Models
 {
     public class ServersManager : IServersManager
     {
-        private static SqliteDataBase sqliteDataBase;
-        public ServersManager(SqliteDataBase sqliteData)
+        private static IDataBase sqliteDataBase;
+        public ServersManager(IDataBase sqliteData)
         {
             sqliteDataBase = sqliteData;
         }
