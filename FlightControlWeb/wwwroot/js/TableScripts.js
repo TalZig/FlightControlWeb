@@ -97,13 +97,14 @@ setInterval(
     }, 1000);
 
 function btnclick(numOfRow) {
-    alert(numOfRow);
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
     let id = rowCells[0].innerHTML;
+    let m = findMarker(id);
     if (selected != null && selected.flight_id === id) {
         reset(selected);
         selected = null;
     }
+    m.setMap(null);
     document.getElementById("intern_table").deleteRow(numOfRow + 1);
     let url = "../api/Flights/" + id;
     let xhr = new XMLHttpRequest();
@@ -140,6 +141,10 @@ function showOnMap(flight) {
         });
     }
     markers.push(marker);
+
+    google.maps.event.addListener(marker, 'mousedown', function (event) {
+        event.stopPropagation();
+    });
 
     google.maps.event.addListener(marker, 'click', function (marker) {
         let flightsUrl = "../api/FlightPlan/" + flight.flight_id + "&sync_all";

@@ -100,6 +100,13 @@
                 mapTypeId: 'terrain'
             });
 
+            google.maps.event.addListener(map, 'click', function (event) {
+                if (selected !== null) {
+                    reset(selected);
+                    selected = null;
+                }
+            });
+
             flightPlanCoordinates = [];
             flightPath = new google.maps.Polyline({
                 path: flightPlanCoordinates,
