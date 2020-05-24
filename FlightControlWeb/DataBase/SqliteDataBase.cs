@@ -698,7 +698,7 @@ namespace FlightControl
         // Function for openning the connection, if the connection is not already open.
         public void OpenConnection()
         {
-            mutex.WaitOne();
+            mutex.WaitOne(); 
             myConnection.Open();
         }
         // Function for closing the connection, if the connection is not already close.
