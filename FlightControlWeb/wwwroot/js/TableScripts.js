@@ -30,21 +30,7 @@ function getDateTime() {
     return dateTime;
 }
 
-
-setInterval(DisplayFlights, 1000);
-
-async function DisplayFlights() {
-    //get the date and put in the pattern.
-    let dateTime = getDateTime();
-    //edit the command
-    let flightsUrl = "../api/Flights?relative_to=" + dateTime
-    //get data from the server
-    //
-    //$.getJSON(flightsUrl, function (data) 
-    let response = await fetch(flightsUrl)
-    response.status
-    let data = await response.json()
-    //initialize the flights table (removing the old flights) .
+async function initializeTable() {
     let table = document.getElementById("intern_table");
     table.innerHTML = "";
     //adding the new flights to the intern_table, moving flight by flight with for-each loop .
@@ -68,6 +54,21 @@ async function DisplayFlights() {
     }
     markers = [];
     flights = [];
+}
+/*addElementToInternTable(flight){ };*/
+setInterval(DisplayFlights, 1000);
+
+async function DisplayFlights() {
+    //get the date and put in the pattern.
+    let dateTime = getDateTime();
+    //edit the command
+    let flightsUrl = "../api/Flights?relative_to=" + dateTime
+    //$.getJSON(flightsUrl, function (data) 
+    let response = await fetch(flightsUrl)
+    response.status
+    let data = await response.json()
+    //initialize the flights table (removing the old flights) .
+    initializeTable();
     let counter = 0;
     data.forEach(function (flight) {
         flights.push(flight);
@@ -87,14 +88,14 @@ async function DisplayFlights() {
         counter++;
     });
     addEventListnerToRows()
+}
+async function checkIfSelectedNotNull(){
     if (selected !== null) {
         let table = document.getElementById("tableFlights");
         if (table.rows.length > 1)
             table.deleteRow(1)
         generateTable(selected);
     }
-
-    //});
 }
 
 function btnclick(numOfRow) {
@@ -213,9 +214,9 @@ function generateTable(flight) {
     let c0 = row.insertCell(0);
     c0.innerHTML = flight.flight_id;
     let c1 = row.insertCell(1);
-    c1.innerHTML = flight.longitude;
+    c1.innerHTML = flight.longitude.toFixed(3);
     let c2 = row.insertCell(2);
-    c2.innerHTML = flight.latitude;
+    c2.innerHTML = flight.latitude.toFixed(3);
     let c3 = row.insertCell(3);
     c3.innerHTML = flight.passengers;
     let c4 = row.insertCell(4);
