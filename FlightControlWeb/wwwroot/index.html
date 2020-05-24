@@ -17,9 +17,9 @@
         <div class="row">
             <div class="col-md-7" id="map"></div>
             <div class="col-md-5" >
-                <div class="jumbotron" id="dragArea">
-                    <table class="table" id="intern_table" ondragover="onDragOver(event)">
-                        <thead>
+                <div class="jumbotron" id="dragArea" style="overflow-y:scroll; max-height:300px;">
+                    <table class="table" id="intern_table" ondragover="onDragOver(event)" style="overflow-y:hidden; max-height:50px;">
+                        <thead style="overflow-y:hidden; max-height:50px;">
                             <tr>
                                 <th>
                                     Flight.ID
@@ -35,7 +35,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="overflow-y:hidden; max-height:50px;">
                         </tbody>
                     </table>
                 </div>
