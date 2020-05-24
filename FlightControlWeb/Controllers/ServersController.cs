@@ -11,10 +11,10 @@ namespace FlightControl.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServerController : ControllerBase
+    public class ServersController : ControllerBase
     {
         public static IServersManager serverManager;
-        public ServerController(IServersManager iServerManager)
+        public ServersController(IServersManager iServerManager)
         {
             serverManager = iServerManager;
         }

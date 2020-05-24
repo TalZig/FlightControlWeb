@@ -6,7 +6,7 @@
     <StartupObject></StartupObject>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon />
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   

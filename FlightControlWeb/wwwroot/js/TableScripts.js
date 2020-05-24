@@ -83,7 +83,7 @@ async function initializeExtTable() {
     extFlights = [];
 }
 
-setInterval(Display, 1000);
+setInterval(Display, 10000);
 
 async function Display() {
     resetMarkers();
