@@ -141,10 +141,7 @@ function showOnMap(flight) {
         });
     }
     markers.push(marker);
-    addEventListnerToMarker(marker);
-}
 
-function addEventListnerToMarker(marker) {
     google.maps.event.addListener(marker, 'mousedown', function (event) {
         event.stopPropagation();
     });
@@ -161,6 +158,10 @@ function addEventListnerToMarker(marker) {
         x.open("GET", flightsUrl, true);
         x.send();
     });
+}
+
+function addEventListnerToMarker(marker) {
+    
 }
 
 function rowClick(i) {
