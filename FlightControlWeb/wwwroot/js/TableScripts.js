@@ -141,7 +141,10 @@ function showOnMap(flight) {
         });
     }
     markers.push(marker);
+    addEventListnerToMarker(marker);
+}
 
+function addEventListnerToMarker(marker) {
     google.maps.event.addListener(marker, 'mousedown', function (event) {
         event.stopPropagation();
     });
@@ -198,6 +201,7 @@ function findMarker(id) {
             return markers[i];
     }
 }
+
 function findFlight(id) {
     let i;
     for (i = 0; i < flights.length; i++) {
@@ -239,6 +243,7 @@ function activate(flight, marker, flightPlan) {
     generateTable(flight);
     changeMarker(marker, flight);
 }
+
 function addEventListnerToRows() {
     var table = document.getElementById("intern_table");
     var trList = table.getElementsByTagName("tr");
@@ -264,6 +269,7 @@ function addEventListnerToRows() {
         }(index));
     }
 }
+
 function changeMarker(marker, flight) {
     let i;
     let x;
@@ -277,6 +283,7 @@ function changeMarker(marker, flight) {
         origin: new google.maps.Point(0, 0), // origin
     });
 }
+
 function resetIcon(flight) {
     let i;
     let x;
@@ -317,6 +324,7 @@ function resetFlightsTable(selected) {
         }
     }
 }
+
 function showPath(flightPlan) {
     flightPlanCoordinates = [];
     let path = flightPath.getPath();
@@ -335,6 +343,7 @@ function resetDetailsTable() {
     if (table.rows.length > 1)
         table.deleteRow(1);
 }
+
 function removePath() {
     let path = flightPath.getPath();
     path = [];
