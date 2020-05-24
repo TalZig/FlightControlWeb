@@ -31,70 +31,71 @@ function getDateTime() {
 }
 
 
-setInterval(
-    async function DisplayFlights() {
-        //get the date and put in the pattern.
-        let dateTime = getDateTime();
-        //edit the command
-        let flightsUrl = "../api/Flights?relative_to=" + dateTime
-        //get data from the server
-        //
-        //$.getJSON(flightsUrl, function (data) 
-        let response = await fetch(flightsUrl)
-        response.status
-        let data = await response.json() 
-            //initialize the flights table (removing the old flights) .
-            let table = document.getElementById("intern_table");
-            table.innerHTML = "";
-            //adding the new flights to the intern_table, moving flight by flight with for-each loop .
-            let header = table.createTHead();
-            let row = header.insertRow();
-            let c0 = row.insertCell(0);
-            c0.innerHTML = "Flight.ID";
-            c0.style.fontWeight = 'bold'
-            let c1 = row.insertCell(1);
-            c1.innerHTML = "Company";
-            c1.style.fontWeight = 'bold'
-            let c2 = row.insertCell(2);
-            c2.innerHTML = "Passengers";
-            c2.style.fontWeight = 'bold'
-            let c3 = row.insertCell(3);
-            c3.innerHTML = "Delete";
-            c3.style.fontWeight = 'bold'
-            let i;
-            for (i = 0; i < markers.length; i++) {
-                markers[i].setMap(null);
-            }
-            markers = [];
-            flights = [];
-            let counter = 0;
-            data.forEach(function (flight) {
-                flights.push(flight);
-                if (selected != null && flight.flight_id == selected.flight_id) {
-                    selected = flight;
-                    $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
-                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onmousedown=btnclick(" + counter + ") onclick=event.stopPropagation() onclick=btnclick(this)>"
-                        + "<img src=\"../images/Trash1.png\"></button></td></tr>")
-                } else {
-                    $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
-                        + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
-                        + flight.passengers + "</td><td><button onmousedown=btnclick(" + counter + ") onclick=event.stopPropagation() >"
-                        + "<img src=\"../images/Trash1.png\"></button></td></tr>")
-                }
-                showOnMap(flight);
-                counter++;
-            });
-            addEventListnerToRows()
-            if (selected !== null) {
-                let table = document.getElementById("tableFlights");
-                if (table.rows.length > 1)
-                    table.deleteRow(1)
-                generateTable(selected);
-            }
+setInterval(DisplayFlights, 1000);
 
-        //});
-    }, 1000);
+async function DisplayFlights() {
+    //get the date and put in the pattern.
+    let dateTime = getDateTime();
+    //edit the command
+    let flightsUrl = "../api/Flights?relative_to=" + dateTime
+    //get data from the server
+    //
+    //$.getJSON(flightsUrl, function (data) 
+    let response = await fetch(flightsUrl)
+    response.status
+    let data = await response.json()
+    //initialize the flights table (removing the old flights) .
+    let table = document.getElementById("intern_table");
+    table.innerHTML = "";
+    //adding the new flights to the intern_table, moving flight by flight with for-each loop .
+    let header = table.createTHead();
+    let row = header.insertRow();
+    let c0 = row.insertCell(0);
+    c0.innerHTML = "Flight.ID";
+    c0.style.fontWeight = 'bold'
+    let c1 = row.insertCell(1);
+    c1.innerHTML = "Company";
+    c1.style.fontWeight = 'bold'
+    let c2 = row.insertCell(2);
+    c2.innerHTML = "Passengers";
+    c2.style.fontWeight = 'bold'
+    let c3 = row.insertCell(3);
+    c3.innerHTML = "Delete";
+    c3.style.fontWeight = 'bold'
+    let i;
+    for (i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    markers = [];
+    flights = [];
+    let counter = 0;
+    data.forEach(function (flight) {
+        flights.push(flight);
+        if (selected != null && flight.flight_id == selected.flight_id) {
+            selected = flight;
+            $("#intern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
+                + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                + flight.passengers + "</td><td><button onmousedown=btnclick(" + counter + ") onclick=event.stopPropagation() onclick=btnclick(this)>"
+                + "<img src=\"../images/Trash1.png\"></button></td></tr>")
+        } else {
+            $("#intern_table").append("<tr style=\"background-color: white\"> <td>"
+                + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                + flight.passengers + "</td><td><button onmousedown=btnclick(" + counter + ") onclick=event.stopPropagation() >"
+                + "<img src=\"../images/Trash1.png\"></button></td></tr>")
+        }
+        showOnMap(flight);
+        counter++;
+    });
+    addEventListnerToRows()
+    if (selected !== null) {
+        let table = document.getElementById("tableFlights");
+        if (table.rows.length > 1)
+            table.deleteRow(1)
+        generateTable(selected);
+    }
+
+    //});
+}
 
 function btnclick(numOfRow) {
     let rowCells = document.getElementById("intern_table").rows[numOfRow + 1].cells;
