@@ -1,17 +1,6 @@
 let selected = null;
 let markers = [];
 let flights = [];
-let icon2 = {
-    url: "../images/Travel.png", // url
-    scaledSize: new google.maps.Size(40, 40), // scaled size
-    origin: new google.maps.Point(0, 0), // origin
-}
-let icon = {
-    url: "../images/plane.png", // url
-    scaledSize: new google.maps.Size(35, 35), // scaled size
-    origin: new google.maps.Point(0, 0), // origin
-};
-
 function getDateTime() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
@@ -40,6 +29,7 @@ function getDateTime() {
     dateTime = dateTime.concat("Z");
     return dateTime;
 }
+
 
 setInterval(
     async function DisplayFlights() {
@@ -123,6 +113,16 @@ function btnclick(numOfRow) {
 }
 
 function showOnMap(flight) {
+    let icon2 = {
+        url: "../images/Travel.png", // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    }
+    let icon = {
+        url: "../images/plane.png", // url
+        scaledSize: new google.maps.Size(35, 35), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+    };
     let marker;
     if (selected != null && selected.flight_id == flight.flight_id) {
         marker = new google.maps.Marker({
@@ -141,7 +141,6 @@ function showOnMap(flight) {
         });
     }
     markers.push(marker);
-
     google.maps.event.addListener(marker, 'mousedown', function (event) {
         event.stopPropagation();
     });
@@ -158,10 +157,6 @@ function showOnMap(flight) {
         x.open("GET", flightsUrl, true);
         x.send();
     });
-}
-
-function addEventListnerToMarker(marker) {
-    
 }
 
 function rowClick(i) {
