@@ -18,17 +18,16 @@ namespace FlightControl
 {
     public class SqliteDataBase : IDataBase
     {
-        private static SqliteConnection myConnection;
-        private static Mutex mutex;
-        public SqliteDataBase() 
+        private SqliteConnection myConnection;
+        private Mutex mutex;
+        public SqliteDataBase()
         {
             mutex = new Mutex();
             SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder();
             // The path of our sqlite that we want to create.
             connectionStringBuilder.DataSource = AppDomain.CurrentDomain.BaseDirectory + @"\Database.sqlite";
-            SqliteDataBase.myConnection = new SqliteConnection(connectionStringBuilder.ConnectionString);
-            mutex.WaitOne();
-            SqliteDataBase.myConnection.Open();
+            myConnection = new SqliteConnection(connectionStringBuilder.ConnectionString);
+            OpenConnection();
             // Create FlightPlanSQL table.
             CreateNewSQLTable("CREATE TABLE IF NOT EXISTS FlightPlanSQL (Id TEXT PRIMARY KEY NOT NULL, Passengers INTEGER DEFAULT 0, Company_name TEXT NOT NULL, Is_external TEXT NOT NULL)");
             // Create InitialLocationSQL table.
@@ -37,11 +36,10 @@ namespace FlightControl
             CreateNewSQLTable("CREATE TABLE IF NOT EXISTS SegmentSQL (Id TEXT NOT NULL, Longitude REAL DEFAULT 34.881505 , Latitude REAL DEFAULT 31.997999, Timespan_Seconds REAL NOT NULL DEFAULT 0)");
             // Create Servers table.
             CreateNewSQLTable("CREATE TABLE IF NOT EXISTS ServersSQL(ServerId TEXT PRIMARY KEY, ServerURL TEXT NOT NULL)");
-            myConnection.Close();
-            mutex.ReleaseMutex();
+            CloseConnection();
         }
         // Create new SQL table using a text that contains the comaptible creation command.
-        private static void CreateNewSQLTable(string commandOfCreatingSQLTable)
+        private void CreateNewSQLTable(string commandOfCreatingSQLTable)
         {
             SqliteCommand tableCommand = myConnection.CreateCommand();
             tableCommand.CommandText = commandOfCreatingSQLTable;
@@ -50,7 +48,6 @@ namespace FlightControl
                 tableCommand.ExecuteReader();
             }
             catch (Exception) { }
-
         }
         // Delete SQL table using a text that contains the comaptible creation command.
         private void DeleteSQLTable(string commandOfCreatingSQLTable)
@@ -72,12 +69,17 @@ namespace FlightControl
         // Adding flightPlan to our SQL tables, and returns the id.
         public string AddFlightPlan(FlightPlan flightPlan)
         {
+            if (flightPlan.Location == null || flightPlan.Segments == null) { return null; }
             OpenConnection();
             // Random id.
             string id = SetRandId();
-            AddToFlightPlanTable(flightPlan, id);
-            AddToInitialLocationTable(flightPlan, id);
-            AddListToSegmentTable(flightPlan.Segments, id);
+            bool succeedToAddFlightPlan;
+            succeedToAddFlightPlan = AddToFlightPlanTable(flightPlan, id);
+            if (!succeedToAddFlightPlan) { return null; }
+            succeedToAddFlightPlan = AddToInitialLocationTable(flightPlan, id);
+            if (!succeedToAddFlightPlan) { return null; }
+            succeedToAddFlightPlan = AddListToSegmentTable(flightPlan.Segments, id);
+            if (!succeedToAddFlightPlan) { return null; }
             CloseConnection();
             return id;
         }
@@ -95,7 +97,7 @@ namespace FlightControl
             return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
         // Add to FlightPlanSQL.
-        private void AddToFlightPlanTable(FlightPlan flightPlan, string id)
+        private bool AddToFlightPlanTable(FlightPlan flightPlan, string id)
         {
             SqliteCommand addFlightPlanTableCommand = SetSqliteCommand("INSERT INTO FlightPlanSQL VALUES (@Id , @Passengers , @Company_name , @Is_external)");
             addFlightPlanTableCommand.Parameters.AddWithValue("@Id", id);
@@ -104,14 +106,13 @@ namespace FlightControl
             addFlightPlanTableCommand.Parameters.AddWithValue("@Is_external", "false");
             try
             {
-                /*OpenConnection();*/
                 addFlightPlanTableCommand.ExecuteReader();
-                /*CloseConnection();*/
+                return true;
             }
-            catch (Exception) { }
+            catch (Exception) { return false; }
         }
         // Add to InitialLocationSQL.
-        private void AddToInitialLocationTable(FlightPlan flightPlan, string id)
+        private bool AddToInitialLocationTable(FlightPlan flightPlan, string id)
         {
             SqliteCommand addInitialLocationTableCommand = SetSqliteCommand("INSERT INTO InitialLocationSQL VALUES (@Id , @Longitude , @Latitude , @Date_Time)");
             addInitialLocationTableCommand.Parameters.AddWithValue("@Id", id);
@@ -120,24 +121,29 @@ namespace FlightControl
             addInitialLocationTableCommand.Parameters.AddWithValue("@Date_Time", flightPlan.Location.Date_Time);
             try
             {
-                /*OpenConnection();*/
                 addInitialLocationTableCommand.ExecuteReader();
-                /*CloseConnection();*/
+                return true;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                DeleteLineFromTable("DELETE FROM FlightPlanSQL WHERE Id=\"" + id + "\"");
+                return false;
+            }
         }
         // Function that takes list of Segment and insert it to SegmentSQL.
-        private void AddListToSegmentTable(List<Segment> segmentList, string id)
+        private bool AddListToSegmentTable(List<Segment> segmentList, string id)
         {
             int i = 0;
             for (; i < segmentList.Count; ++i)
             {
                 // Insert a row of Segment.
-                AddRowToSegmentTable(segmentList[i], id);
+                bool succeedToAdd = AddRowToSegmentTable(segmentList[i], id);
+                if (!succeedToAdd) { return false; }
             }
+            return true;
         }
         // Add a row of Segment to SegmentSQL.
-        private void AddRowToSegmentTable(Segment segment, string id)
+        private bool AddRowToSegmentTable(Segment segment, string id)
         {
             SqliteCommand addSegmentTableCommand = SetSqliteCommand("INSERT INTO SegmentSQL VALUES (@Id , @Longitude , @Latitude , @Timespan_Seconds)");
             addSegmentTableCommand.Parameters.AddWithValue("@Id", id);
@@ -146,11 +152,14 @@ namespace FlightControl
             addSegmentTableCommand.Parameters.AddWithValue("@Timespan_Seconds", segment.Timespan_Seconds);
             try
             {
-                /*OpenConnection();*/
                 addSegmentTableCommand.ExecuteReader();
-                /*CloseConnection();*/
+                return true;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                DeleteFlightPlanFromTable(id);
+                return false;
+            }
         }
         // Function that returns FlightPlan according to the given id.
         public FlightPlan GetFlightPlanById(string id)

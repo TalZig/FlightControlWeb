@@ -1,6 +1,9 @@
 let selected = null;
 let markers = [];
 let flights = [];
+let extMarkers = [];
+let extFlights = [];
+
 function getDateTime() {
     let d = new Date();
     let dateTime = d.getFullYear().toString();
@@ -37,7 +40,7 @@ async function initializeTable() {
     let header = table.createTHead();
     let row = header.insertRow();
     let c0 = row.insertCell(0);
-    c0.innerHTML = "Flight.ID";
+    c0.innerHTML = "ID";
     c0.style.fontWeight = 'bold'
     let c1 = row.insertCell(1);
     c1.innerHTML = "Company";
@@ -48,22 +51,51 @@ async function initializeTable() {
     let c3 = row.insertCell(3);
     c3.innerHTML = "Delete";
     c3.style.fontWeight = 'bold'
+    flights = [];
+}
+
+function resetMarkers() {
     let i;
     for (i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
     markers = [];
-    flights = [];
 }
-/*addElementToInternTable(flight){ };*/
-setInterval(DisplayFlights, 1000);
+
+async function initializeExtTable() {
+    let table = document.getElementById("extern_table");
+    table.innerHTML = "";
+    //adding the new flights to the intern_table, moving flight by flight with for-each loop .
+    let header = table.createTHead();
+    let row = header.insertRow();
+    let c0 = row.insertCell(0);
+    c0.innerHTML = "ID";
+    c0.style.fontWeight = 'bold'
+    let c1 = row.insertCell(1);
+    c1.innerHTML = "Company";
+    c1.style.fontWeight = 'bold'
+    let c2 = row.insertCell(2);
+    c2.innerHTML = "Passengers";
+    c2.style.fontWeight = 'bold'
+    let c3 = row.insertCell(3);
+    c3.innerHTML = "Delete";
+    c3.style.fontWeight = 'bold'
+    extFlights = [];
+}
+
+setInterval(Display, 1000);
+
+async function Display() {
+    resetMarkers();
+    DisplayFlights();
+    DisplayExtFlights();
+}
 
 async function DisplayFlights() {
     //get the date and put in the pattern.
     let dateTime = getDateTime();
     //edit the command
     let flightsUrl = "../api/Flights?relative_to=" + dateTime
-    //$.getJSON(flightsUrl, function (data) 
     let response = await fetch(flightsUrl)
     response.status
     let data = await response.json()
@@ -89,6 +121,39 @@ async function DisplayFlights() {
     });
     addEventListnerToRows()
 }
+
+async function DisplayExtFlights() {
+    //get the date and put in the pattern.
+    let dateTime = getDateTime();
+    //edit the command
+    let flightsUrl = "../api/Flights?relative_to=" + dateTime + "&sync_all";
+    //$.getJSON(flightsUrl, function (data) 
+    let response = await fetch(flightsUrl)
+    response.status
+    let data = await response.json()
+    //initialize the flights table (removing the old flights) .
+    initializeExtTable();
+    let counter = 0;
+    data.forEach(function (flight) {
+        if (flight.is_external === "true") {
+            extFlights.push(flight);
+            if (selected != null && flight.flight_id == selected.flight_id) {
+                selected = flight;
+                $("#extern_table").append("<tr style=\"background-color: aquamarine\"> <td>"
+                    + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                    + flight.passengers + "</td></tr>")
+            } else {
+                $("#extern_table").append("<tr style=\"background-color: white\"> <td>"
+                    + flight.flight_id + "</td>" + "<td>" + flight.company_name + "</td>" + "<td>"
+                    + flight.passengers + "</td></tr>")
+            }
+            showOnMap(flight);
+            counter++;
+        }
+    });
+    addEventListnerToExtRows()
+}
+
 async function checkIfSelectedNotNull(){
     if (selected !== null) {
         let table = document.getElementById("tableFlights");
@@ -244,6 +309,32 @@ function activate(flight, marker, flightPlan) {
 
 function addEventListnerToRows() {
     var table = document.getElementById("intern_table");
+    var trList = table.getElementsByTagName("tr");
+    for (var index = 0; index < trList.length; index++) {
+        (function (index) {
+            trList[index].addEventListener("click", function (event) {
+                var target = event.target || event.srcElement; //for IE8 backward compatibility
+                while (target && target.nodeName != 'TR') {
+                    target = target.parentElement;
+                }
+                var cells = target.cells; //cells collection
+                //var cells = target.getElementsByTagName('td'); //alternative
+                if (!cells.length || target.parentNode.nodeName == 'THEAD') { // if clicked row is within thead
+                    return;
+                }
+                let flightId;
+                flightId = cells[0].innerHTML;
+                let flight = findFlight(flightId);
+                //helper(flight);
+                helper(flight);
+                //alert(index);
+            });
+        }(index));
+    }
+}
+
+function addEventListnerToExtRows() {
+    var table = document.getElementById("extern_table");
     var trList = table.getElementsByTagName("tr");
     for (var index = 0; index < trList.length; index++) {
         (function (index) {
