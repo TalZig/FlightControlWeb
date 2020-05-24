@@ -185,7 +185,7 @@ function showOnMap(flight) {
         scaledSize: new google.maps.Size(40, 40), // scaled size
         origin: new google.maps.Point(0, 0), // origin
     }
-    let icon = {
+    let icon = { 
         url: "../images/plane.png", // url
         scaledSize: new google.maps.Size(35, 35), // scaled size
         origin: new google.maps.Point(0, 0), // origin
